@@ -1,0 +1,18 @@
+$green: #3BECAB;
+$blue: #15B7E4;
+
+@mixin body() {
+  min-height: 100vh
+}
+
+body {
+  background-image: linear-gradient( 26deg, $blue, $green );
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center center;
+  @include body();
+
+  h1:hover {
+    color: $blue;
+  }
+}

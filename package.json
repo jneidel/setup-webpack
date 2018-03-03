@@ -1,0 +1,55 @@
+{
+  "name": "setup-webpack",
+  "version": "0.0.0",
+  "description": "Opinionated collection of webpack plugins and loaders with explanations of common use cases",
+  "repository": "jneidel/setup-webpack",
+  "license": "MIT",
+  "author": {
+    "name": "Jonathan Neidel",
+    "email": "jneidel@outlook.com",
+    "url": "https://jneidel.com"
+  },
+  "scripts": {
+    "scss": "webpack --config examples/webpack/scss.js",
+    "prod": "webpack --config examples/webpack/prod.js",
+    "server": "node examples/server/server.js",
+    "sync": "concurrently \"npm run server\" \"webpack -w --config examples/webpack/sync.js\" --names \"💻 ,📦 \" --prefix name",
+    "env": "concurrently \"npm run server\" \"webpack -w --config examples/webpack/env.js\" --names \"💻 ,📦 \" --prefix name",
+    "build": "webpack --config examples/webpack/complete.js",
+    "start": "concurrently \"npm run server\" \"npm run build\" --names \"💻 ,📦 \" --prefix name"
+  },
+  "main": "index.js",
+  "engines": {
+    "node": ">=6"
+  },
+  "dependencies": {
+    "ajv": "^6.2.1",
+    "babel-core": "^6.26.0",
+    "babel-loader": "^7.1.3",
+    "babel-minify-webpack-plugin": "^0.3.0",
+    "babel-preset-env": "^1.6.1",
+    "browser-sync": "^2.23.6",
+    "browser-sync-webpack-plugin": "^2.0.1",
+    "extract-text-webpack-plugin": "^3.0.2",
+    "node-sass": "^4.7.2",
+    "raw-loader": "^0.5.1",
+    "sass-loader": "^6.0.7",
+    "webpack": "^3.11.0"
+  },
+  "devDependencies": {
+    "concurrently": "^3.5.1",
+    "connect": "^3.6.6",
+    "dotenv": "^5.0.1",
+    "expect": "^1.20.2",
+    "py-range": "^1.0.0",
+    "serve-static": "^1.13.2"
+  },
+  "keywords": [
+    "webpack",
+    "setup",
+    "use-case",
+    "guide",
+    "webpack-plugin",
+    "webpack-loader"
+  ]
+}
