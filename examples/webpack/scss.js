@@ -6,7 +6,7 @@ const { scss, bundleCss } = require( "../../index" );
 module.exports = {
   entry : "./examples/src/bundles/app.bundle.js",
   output: {
-    path    : path.resolve( __dirname, "build/js" ),
+    path    : path.resolve( __dirname, "../build/js" ),
     filename: "app.js",
   },
   module: {

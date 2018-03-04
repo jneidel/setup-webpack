@@ -12,7 +12,7 @@ const sync = browserSync( 8000, 8080 );
 module.exports = {
   entry : "./examples/src/bundles/app.bundle.js",
   output: {
-    path    : path.resolve( __dirname, "build/js" ),
+    path    : path.resolve( __dirname, "../build/js" ),
     filename: "app.js",
   },
   module: {

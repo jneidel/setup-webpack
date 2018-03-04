@@ -6,7 +6,7 @@ const { uglify, minify, babel } = require( "../../index" );
 module.exports = {
   entry : "./examples/src/bundles/js.bundle.js",
   output: {
-    path    : path.resolve( __dirname, "build/js" ),
+    path    : path.resolve( __dirname, "../build/js" ),
     filename: "app.js",
   },
   module: {

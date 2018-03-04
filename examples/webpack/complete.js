@@ -23,12 +23,12 @@ const result = [];
   result.push( Object.assign( {}, config, {
     entry : `./examples/src/bundles/${name}.bundle.js`,
     output: {
-      path    : path.resolve( __dirname, "build/js" ),
+      path    : path.resolve( __dirname, "../build/js" ),
       filename: `${name}.js`,
     },
     plugins: prod ?
-      [ minify, uglify, bundleCss( name ) ] :
-      [ bundleCss( name ), sync ],
+      [ minify, uglify, bundleCss( `../css/${name}.css` ) ] :
+      [ bundleCss( `../css/${name}.css` ), sync ],
   } ) );
 } );
 
