@@ -47,3 +47,6 @@ exports.browserSync = ( proxy = 8000, port = 8080 ) =>
     port,
     proxy: `http://localhost:${proxy}/`,
   }, {} );
+
+// Functions
+exports.polyfill = path => [ "babel-polyfill", path ];

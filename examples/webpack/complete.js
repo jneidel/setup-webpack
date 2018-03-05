@@ -1,5 +1,5 @@
 const path = require( "path" );
-const { genScss, genPug, babel, uglify, browserSync } = require( "../../index" );
+const { genScss, genPug, babel, uglify, browserSync, polyfill } = require( "../../index" );
 
 // Run: $ npm run complete
 
@@ -15,8 +15,11 @@ const result = [];
   const scss = genScss( `../css/${name}.css` );
   const pug = genPug( `../html/${name}.html` );
 
+  const entryPath = `./examples/src/bundles/${name}.bundle.js`;
+  const entry = prod ? polyfill( entryPath ) : entryPath;
+
   result.push( {
-    entry : `./examples/src/bundles/${name}.bundle.js`,
+    entry,
     output: {
       path    : path.resolve( __dirname, "../build/js" ),
       filename: `${name}.js`,

@@ -7,7 +7,7 @@
 
 Reduce boilerplate creating your webpack config and keep your package.json slim.
 
-Includes abstractions for transforming scss and pug, transpiling your javascript, minfication and reloading the browser on changes. All usage patterns described with clear examples.
+Includes abstractions for transforming scss and pug, transpiling and polyfill your javascript, minfication and reloading the browser on changes. All usage patterns described with clear examples.
 
 ## Install
 
@@ -22,7 +22,7 @@ $ npm install setup-webpack
 **webpack.config.js:**
 
 ```js
-const { babel, uglify, browserSync, genScss, genPug } = require( "setup-webpack" );
+const { babel, polyfill, uglify, browserSync, genScss, genPug } = require( "setup-webpack" );
 
 const sync = browserSync( 8000, 8080 );
 
@@ -30,7 +30,7 @@ const scss = genScss( "app.css" );
 const pug = genPug( "app.html" );
 
 module.exports = {
-  entry : "./app.bundle.js",
+  entry : polyfill( "./app.bundle.js" ),
   output: {
     path    : path.resolve( __dirname, "build" ),
     filename: "app.js",
@@ -140,9 +140,9 @@ module.exports = {
 };
 ```
 
-### Compress and transpile ES6+
+### Minify and transpile ES6+
 
-Reduce file size using uglify/minify and transpile ES6+ for older browsers.
+Reduce file size using uglify/minify, polyfill and transpile ES6+ for older browsers using babel.
 
 Working example at [`examples/webpack/prod.js`](https://github.com/jneidel/setup-webpack/blob/master/examples/webpack/prod.js).
 
@@ -158,7 +158,8 @@ require( "./src/app.js" );
 const { babel, uglify } = require( "setup-webpack" );
 
 module.exports = {
-  entry : "./bundle.js", // Bundle only includes js file
+  entry : polyfill( "./bundle.js" ), // Bundle only includes js file
+  // Wrap bundle in polyfill function to polyfill the given bundle
   output: { path: outputPath, filename: "app.js" },
   module: { // Transpiling happens here
     loaders: [ babel ],
@@ -167,32 +168,7 @@ module.exports = {
 };
 ```
 
-### Reload browser on changes
-
-Any changes on the files include in the `bundle.js` will cause a rebuild and reload of the browser.
-
-Working example at [`examples/webpack/sync.js`](https://github.com/jneidel/setup-webpack/blob/master/examples/webpack/sync.js).
-
-**webpack.config.js:**
-
-```js
-const { browserSync } = require( "setup-webpack" );
-
-const sync = browserSync( 8000, 8080 );
-// Declaring sync as a variable works best
-
-module.exports = {
-  entry : "./bundle.js",
-  output: { path: outputPath, filename: "app.js" },
-  plugins: [ sync ],
-};
-```
-
-The script has to run webpack in watch (-w) mode for browser-sync to be triggerd once webpack has rebuilt.
-
-```
-$ webpack -w
-```
+As this process takes some time you only want to run this in an production environment and not while developing.
 
 ### Differentiate between development and production env
 
@@ -210,7 +186,7 @@ require( "./src/app.scss" );
 **webpack.config.js:**
 
 ```js
-const { genScss, babel, uglify, browserSync } = require( "setup-webpack" );
+const { genScss, babel, uglify, browserSync, polyfill } = require( "setup-webpack" );
 
 require( "dotenv" ).config( { path: "vars.env" } ); // Import env variables
 
@@ -220,32 +196,76 @@ const sync = browserSync( 8000, 8080 );
 
 const scss = genScss( "app.css" );
 
+const entry = prod ? polyfill( "./app.js" ) : "./app.js";
+
 module.exports = {
-  entry : "./app.js",
-  output: {
-    path    : path.resolve( __dirname, "build" ),
-    filename: "app.js",
-  },
+  entry,
+  output: { path outputPath, filename: "app.js" },
   module: {
     loaders: prod ?
-      [ babel, scss.loader ] : // Transpile if prod
+      [ babel, scss.loader ] : // Transpile js and scss if prod
       [ scss.loader ], // Else only transpile scss
   },
   plugins: prod ?
     [ uglify, scss.plugin ] : // Minify if prod
-    [ scss.plugin, sync ], // Else transpile scss and watch for changes
-    // Put sync at the end as your browser should reload after done is built
+    [ scss.plugin ], // Else only transpile scss
 };
 ```
+
+### Reload browser on changes
+
+Any changes on the files include in the `bundle.js` will cause a rebuild and reload of the browser.
+
+Working example at [`examples/webpack/sync.js`](https://github.com/jneidel/setup-webpack/blob/master/examples/webpack/sync.js).
+
+**webpack.config.js:**
+
+```js
+const { browserSync } = require( "setup-webpack" );
+
+const sync = browserSync( 8000, 8080 );
+// Declaring sync as a variable works best
+
+// browserSync should only be used during development
+module.exports = {
+  entry : "./bundle.js",
+  output: { path: outputPath, filename: "app.js" },
+  plugins: [ sync ],
+  // Put sync at the end as your browser should reload after done is built
+};
+```
+
+The script has to run webpack in watch (-w) mode for browser-sync to be triggerd once webpack has rebuilt.
+
+```
+$ webpack -w
+```
+
+If this command does not work in your terminal, try installing the webpack cli using `npm install -g webpack` or run the command via a npm script (in your `package.json` under `scripts`), for example `"build": "webpack -w"` and `npm run build`.
 
 ### Generating more than one output file
 
 Working example at [`examples/webpack/complete.js`](https://github.com/jneidel/setup-webpack/blob/master/examples/webpack/complete.js).
 
+**app.bundle.js:**
+
+```js
+require( "./src/app.js" );
+require( "./src/app.scss" );
+```
+
+**help.bundle.js:**
+
+```js
+require( "./src/help.js" );
+require( "./src/help.scss" );
+require( "./src/help.pug" );
+```
+
 **webpack.config.js:**
 
 ```js
-const { genScss, babel, uglify, browserSync } = require( "setup-webpack" );
+const { genScss, babel, uglify, browserSync, polyfill } = require( "setup-webpack" );
 
 require( "dotenv" ).config( { path: "vars.env" } );
 
@@ -260,8 +280,9 @@ const result = []; // Exported webpack config can be a obj or an array of object
   const scss = genScss( `${name}.css` );
   const pug = genPug( `${name}.html` );
 
+  const entry = prod ? polyfill( `./${name}.bundle.js` ) : `./${name}.bundle.js`;
   result.push( {
-    entry : `./${name}.js`,
+    entry,
     output: { path: outputPath, filename: `${name}.js` },
     module: {
       loaders: prod ?
@@ -277,6 +298,10 @@ const result = []; // Exported webpack config can be a obj or an array of object
 module.exports = result;
 ```
 
+For each `require` in the entry file, the corresponding, transpiled output file will be generated.
+
+Omission of `require`d files does not have any consequences, only the `*.bundle.js` file is necessary for the build to complete.
+
 ## API
 
 Cherry-pick the parts that you need using object destructuring:
@@ -284,6 +309,14 @@ Cherry-pick the parts that you need using object destructuring:
 ```js
 const { genScss, babel, uglify } = require( "setup-webpack" );
 ```
+
+- `babel`
+- `uglify`
+- `polyfill( path )`
+- `genScss( path ) => { loader, plugin }`
+- `genPug( path ) => { loader, plugin }`
+- `browserSync( [proxy], [port] )`
+
 ### babel
 
 Type: `object`
@@ -305,6 +338,52 @@ module.exports = {
 ```
 
 Using [babel-loader](https://www.npmjs.com/package/babel-loader), [babel-preset-env](https://www.npmjs.com/package/babel-preset-env), [babel-minify-webpack-plugin](https://www.npmjs.com/package/babel-minify-webpack-plugin), [babel-core](https://www.npmjs.com/package/babel-core) underneath.
+
+### uglify
+
+Type: `object`
+
+Unit: `plugin`
+
+Compresses, minifies files, [more](https://github.com/mishoo/UglifyJS2).
+
+```js
+const { uglify } = require( "setup-webpack" );
+
+module.exports = {
+  plugins: [ uglify ]
+}
+```
+
+Using [webpack](https://www.npmjs.com/package/webpack).optimize.UglifyJsPlugin underneath.
+
+### polyfill( path )
+
+Type: `function`
+
+Polyfills functions and methods not available in all browsers yet, [more](https://babeljs.io/docs/usage/polyfill/).
+
+```js
+const { polyfill } = require( "setup-webpack" );
+
+module.exports = {
+  entry: polyfill( "./bundle.js" )
+}
+```
+
+#### path
+
+Type: `string`
+
+Path to entry point bundle, which requires the code to be build.
+
+**bundle.js:**
+
+```js
+require( "./app.js" );
+```
+
+Using [babel-polyfill](https://www.npmjs.com/package/babel-polyfill) underneath.
 
 ### genScss( path ) => { loader, plugin }
 
@@ -423,23 +502,6 @@ module.exports = {
 
 Using [babel-minify-webpack-plugin](https://www.npmjs.com/package/babel-minify-webpack-plugin) underneath.
 
-### uglify
-
-Type: `object`
-
-Unit: `plugin`
-
-Compresses, minifies files, [more](https://github.com/mishoo/UglifyJS2).
-
-```js
-const { uglify } = require( "setup-webpack" );
-
-module.exports = {
-  plugins: [ uglify ]
-}
-```
-
-Using [webpack](https://www.npmjs.com/package/webpack).optimize.UglifyJsPlugin underneath.
 
 ## License
 

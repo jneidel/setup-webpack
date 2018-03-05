@@ -24,5 +24,5 @@ module.exports = {
   },
   plugins: prod ?
     [ uglify, scss.plugin ] :
-    [ scss.plugin, sync ],
+    [ scss.plugin ],
 };
