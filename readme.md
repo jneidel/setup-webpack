@@ -42,7 +42,7 @@ module.exports = {
 
 ## Usage Patterns
 
-All working examples can be found in the `examples/webpack` folder.
+All working examples can be found in the [`examples/webpack`](https://github.com/jneidel/setup-webpack/tree/master/examples/webpack) folder.
 
 Clone the repo to follow along with the examples:
 
@@ -78,7 +78,7 @@ const outputPath = path.resolve( __dirname, "build" );
 
 Transform [scss](https://sass-lang.com/) or (sass) to css.
 
-Working example at `examples/webpack/scss.js`.
+Working example at [`examples/webpack/scss.js`](https://github.com/jneidel/setup-webpack/blob/master/examples/webpack/scss.js).
 
 **bundle.js:**
 
@@ -111,7 +111,7 @@ module.exports = {
 
 Transform [pug](https://github.com/pugjs/pug) to html.
 
-Working example at `examples/webpack/pug.js`.
+Working example at [`examples/webpack/pug.js`](https://github.com/jneidel/setup-webpack/blob/master/examples/webpack/pug.js).
 
 Same syntax as with scss applies.
 
@@ -142,7 +142,7 @@ module.exports = {
 
 Reduce file size using uglify/minify and transpile ES6+ for older browsers.
 
-Working example at `examples/webpack/prod.js`.
+Working example at [`examples/webpack/prod.js`](https://github.com/jneidel/setup-webpack/blob/master/examples/webpack/prod.js).
 
 **bundle.js:**
 
@@ -169,7 +169,7 @@ module.exports = {
 
 Any changes on the files include in the `bundle.js` will cause a rebuild and reload of the browser.
 
-Working example at `examples/webpack/sync.js`.
+Working example at [`examples/webpack/sync.js`](https://github.com/jneidel/setup-webpack/blob/master/examples/webpack/sync.js).
 
 **webpack.config.js:**
 
@@ -196,7 +196,7 @@ $ webpack -w
 
 Using environmental variables compression and transpiling will only be triggerd in a production evironment.
 
-Working example at `examples/webpack/env.js`
+Working example at [`examples/webpack/env.js`](https://github.com/jneidel/setup-webpack/blob/master/examples/webpack/env.js).
 
 **bundle.js:**
 
@@ -238,7 +238,7 @@ module.exports = {
 
 ### Generating more than one output file
 
-Working example at `examples/webpack/complete.js`
+Working example at [`examples/webpack/complete.js`](https://github.com/jneidel/setup-webpack/blob/master/examples/webpack/complete.js).
 
 **webpack.config.js:**
 
