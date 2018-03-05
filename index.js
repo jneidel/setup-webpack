@@ -10,24 +10,10 @@ exports.babel = {
   use : {
     loader : "babel-loader",
     options: {
-      presets: [ "babel-preset-env" ],
+      presets: [ "babel-preset-env", "minify" ],
     },
   },
 };
-
-// Plugins
-exports.uglify = new webpack.optimize.UglifyJsPlugin( {
-  compress: { warnings: false },
-} );
-
-exports.minify = new minifyModule( {}, { comments: false } );
-
-exports.browserSync = ( proxy = 8000, port = 8080 ) =>
-  new browserSyncPlugin( {
-    host : "localhost",
-    port,
-    proxy: `http://localhost:${proxy}/`,
-  }, {} );
 
 // Generators
 const genScss = ( path ) => {
@@ -49,3 +35,15 @@ exports.genPug = ( path ) => {
   };
   return { loader, plugin };
 };
+
+// Plugins
+exports.uglify = new webpack.optimize.UglifyJsPlugin( {
+  compress: { warnings: false },
+} );
+
+exports.browserSync = ( proxy = 8000, port = 8080 ) =>
+  new browserSyncPlugin( {
+    host : "localhost",
+    port,
+    proxy: `http://localhost:${proxy}/`,
+  }, {} );

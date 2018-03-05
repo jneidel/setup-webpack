@@ -1,5 +1,5 @@
 const path = require( "path" );
-const { uglify, minify, babel } = require( "../../index" );
+const { uglify, babel } = require( "../../index" );
 
 // Run: $ npm run prod
 
@@ -12,5 +12,5 @@ module.exports = {
   module: {
     loaders: [ babel ],
   },
-  plugins: [ uglify, minify ],
+  plugins: [ uglify ],
 };

@@ -7,6 +7,8 @@
 
 Reduce boilerplate creating your webpack config and keep your package.json slim.
 
+Includes abstractions for transforming scss and pug, transpiling your javascript, minfication and reloading the browser on changes. All usage patterns described with clear examples.
+
 ## Install
 
 [![](https://img.shields.io/npm/v/setup-webpack.svg)](https://www.npmjs.com/package/setup-webpack)
@@ -20,7 +22,7 @@ $ npm install setup-webpack
 **webpack.config.js:**
 
 ```js
-const { babel, minify, uglify, browserSync, genScss, genPug } = require( "setup-webpack" );
+const { babel, uglify, browserSync, genScss, genPug } = require( "setup-webpack" );
 
 const sync = browserSync( 8000, 8080 );
 
@@ -36,7 +38,7 @@ module.exports = {
   module: {
     loaders: [ babel, scss.loader, pug.loader ],
   },
-  plugins: [ minify, uglify, scss.plugin, pug.plugin, sync ],
+  plugins: [ uglify, scss.plugin, pug.plugin, sync ],
 };
 ```
 
@@ -113,7 +115,7 @@ Transform [pug](https://github.com/pugjs/pug) to html.
 
 Working example at [`examples/webpack/pug.js`](https://github.com/jneidel/setup-webpack/blob/master/examples/webpack/pug.js).
 
-Same syntax as with scss applies.
+Same syntax from scss applies.
 
 **bundle.js:**
 
@@ -153,7 +155,7 @@ require( "./src/app.js" );
 **webpack.config.js:**
 
 ```js
-const { babel, uglify, minify } = require( "setup-webpack" );
+const { babel, uglify } = require( "setup-webpack" );
 
 module.exports = {
   entry : "./bundle.js", // Bundle only includes js file
@@ -161,7 +163,7 @@ module.exports = {
   module: { // Transpiling happens here
     loaders: [ babel ],
   }, // And compression and minfiying here
-  plugins: [ minify, uglify ],
+  plugins: [ uglify ],
 };
 ```
 
@@ -208,7 +210,7 @@ require( "./src/app.scss" );
 **webpack.config.js:**
 
 ```js
-const { genScss, babel, uglify, minify, browserSync } = require( "setup-webpack" );
+const { genScss, babel, uglify, browserSync } = require( "setup-webpack" );
 
 require( "dotenv" ).config( { path: "vars.env" } ); // Import env variables
 
@@ -230,7 +232,7 @@ module.exports = {
       [ scss.loader ], // Else only transpile scss
   },
   plugins: prod ?
-    [ minify, uglify, scss.plugin ] : // Minify if prod
+    [ uglify, scss.plugin ] : // Minify if prod
     [ scss.plugin, sync ], // Else transpile scss and watch for changes
     // Put sync at the end as your browser should reload after done is built
 };
@@ -243,7 +245,7 @@ Working example at [`examples/webpack/complete.js`](https://github.com/jneidel/s
 **webpack.config.js:**
 
 ```js
-const { genScss, babel, uglify, minify, browserSync } = require( "setup-webpack" );
+const { genScss, babel, uglify, browserSync } = require( "setup-webpack" );
 
 require( "dotenv" ).config( { path: "vars.env" } );
 
@@ -267,7 +269,7 @@ const result = []; // Exported webpack config can be a obj or an array of object
         [ scss.loader, pug.loader ],
     },
     plugins: prod ?
-      [ minify, uglify, scss.plugin, pug.plugin ] :
+      [ uglify, scss.plugin, pug.plugin ] :
       [ scss.plugin, pug.plugin, sync ],
   } );
 } );
@@ -280,8 +282,29 @@ module.exports = result;
 Cherry-pick the parts that you need using object destructuring:
 
 ```js
-const { scss, babel, minify } = require( "setup-webpack" );
+const { genScss, babel, uglify } = require( "setup-webpack" );
 ```
+### babel
+
+Type: `object`
+
+Unit: `loader`
+
+Transpiling ES6+ javascript for older browsers ([more](https://babeljs.io/)) and minify contents (shrinks down files, removing whitespace, redundant characters, [more](https://babeljs.io/blog/2016/08/30/babili)).
+
+Uses the [env](https://babeljs.io/docs/plugins/preset-env/) preset as well the [minifier](https://github.com/babel/minify) as options.
+
+```js
+const { babel } = require( "setup-webpack" );
+
+module.exports = {
+  module: {
+    loaders: [ babel ]
+  }
+}
+```
+
+Using [babel-loader](https://www.npmjs.com/package/babel-loader), [babel-preset-env](https://www.npmjs.com/package/babel-preset-env), [babel-minify-webpack-plugin](https://www.npmjs.com/package/babel-minify-webpack-plugin), [babel-core](https://www.npmjs.com/package/babel-core) underneath.
 
 ### genScss( path ) => { loader, plugin }
 
@@ -357,26 +380,6 @@ module.exports = {
 
 Using [extract-text-webpack-plugin](https://www.npmjs.com/package/extract-text-webpack-plugin), [pug](https://www.npmjs.com/package/pug), [pug-html-loader](https://www.npmjs.com/package/pug-html-loader) underneath.
 
-### babel
-
-Type: `object`
-
-Unit: `loader`
-
-Transpiling ES6+ javascript for older browsers, [more](https://babeljs.io/).
-
-```js
-const { babel } = require( "setup-webpack" );
-
-module.exports = {
-  module: {
-    loaders: [ babel ]
-  }
-}
-```
-
-Using [babel-loader](https://www.npmjs.com/package/babel-loader), [babel-preset-env](https://www.npmjs.com/package/babel-preset-env), [babel-core](https://www.npmjs.com/package/babel-core) underneath.
-
 ### browserSync( [proxy], [port] )
 
 Type: `function`
@@ -409,13 +412,6 @@ Describes the port browser-sync will be running on. Only browser tabs connected 
 
 Using [browser-sync](https://www.npmjs.com/package/browser-sync), [browser-sync-webpack-plugin](https://www.npmjs.com/package/browser-sync-webpack-plugin) underneath.
 
-### minify
-
-Type: `object`
-
-Unit: `plugin`
-
-Shrinks down files, removing whitespace, redundant characters, [more](https://babeljs.io/blog/2016/08/30/babili).
 
 ```js
 const { minify } = require( "setup-webpack" );

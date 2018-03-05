@@ -1,9 +1,9 @@
 const path = require( "path" );
-const { genScss, babel, uglify, minify, browserSync } = require( "../../index" );
+const { genScss, babel, uglify, browserSync } = require( "../../index" );
 
 // Run: $ npm run env
 
-require( "dotenv" ).config( { path: "vars.env" } );
+require( "dotenv" ).config( { path: "examples/webpack/vars.env" } );
 
 const prod = process.env.NODE_ENV === "prod";
 
@@ -23,6 +23,6 @@ module.exports = {
       [ scss.loader ],
   },
   plugins: prod ?
-    [ minify, uglify, scss.plugin ] :
+    [ uglify, scss.plugin ] :
     [ scss.plugin, sync ],
 };
