@@ -1,13 +1,15 @@
 const path = require( "path" );
-const { scss, bundleCss, babel, uglify, minify, browserSync } = require( "../../index" );
+const { genScss, babel, uglify, minify, browserSync } = require( "../../index" );
 
-// Run: $ npm run babel
+// Run: $ npm run env
 
 require( "dotenv" ).config( { path: "vars.env" } );
 
 const prod = process.env.NODE_ENV === "prod";
 
 const sync = browserSync( 8000, 8080 );
+
+const scss = genScss( "../css/app.css" );
 
 module.exports = {
   entry : "./examples/src/bundles/app.bundle.js",
@@ -17,10 +19,10 @@ module.exports = {
   },
   module: {
     loaders: prod ?
-      [ babel, scss ] :
-      [ scss ],
+      [ babel, scss.loader ] :
+      [ scss.loader ],
   },
   plugins: prod ?
-    [ minify, uglify, bundleCss( "../css/app.css" ) ] :
-    [ bundleCss( "../css/app.css" ), sync ],
+    [ minify, uglify, scss.plugin ] :
+    [ scss.plugin, sync ],
 };

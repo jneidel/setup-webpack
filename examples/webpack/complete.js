@@ -1,7 +1,7 @@
 const path = require( "path" );
-const { scss, bundleCss, babel, uglify, minify, browserSync } = require( "../../index" );
+const { genScss, babel, uglify, minify, browserSync } = require( "../../index" );
 
-// Run: $ npm run start
+// Run: $ npm run complete
 
 require( "dotenv" ).config( { path: "vars.env" } );
 
@@ -9,27 +9,26 @@ const prod = process.env.NODE_ENV === "prod";
 
 const sync = browserSync( 8000, 8080 );
 
-const config = {
-  module: {
-    loaders: prod ?
-      [ babel, scss ] :
-      [ scss ],
-  },
-};
-
 const result = [];
 
 [ "app", "help" ].forEach( ( name ) => {
-  result.push( Object.assign( {}, config, {
+  const scss = genScss( `../css/${name}.css` );
+
+  result.push( {
     entry : `./examples/src/bundles/${name}.bundle.js`,
     output: {
       path    : path.resolve( __dirname, "../build/js" ),
       filename: `${name}.js`,
     },
+    module: {
+      loaders: prod ?
+        [ babel, scss.loader ] :
+        [ scss.loader ],
+    },
     plugins: prod ?
-      [ minify, uglify, bundleCss( `../css/${name}.css` ) ] :
-      [ bundleCss( `../css/${name}.css` ), sync ],
-  } ) );
+      [ minify, uglify, scss.plugin ] :
+      [ scss.plugin, sync ],
+  } );
 } );
 
 module.exports = result;

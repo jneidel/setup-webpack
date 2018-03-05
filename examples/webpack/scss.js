@@ -1,7 +1,9 @@
 const path = require( "path" );
-const { scss, bundleCss } = require( "../../index" );
+const { genScss } = require( "../../index" );
 
-// Run: $ npm run babel
+// Run: $ npm run scss
+
+const scss = genScss( "../css/app.css" );
 
 module.exports = {
   entry : "./examples/src/bundles/app.bundle.js",
@@ -10,7 +12,7 @@ module.exports = {
     filename: "app.js",
   },
   module: {
-    loaders: [ scss ],
+    loaders: [ scss.loader ],
   },
-  plugins: [ bundleCss( "../css/app.css" ) ],
+  plugins: [ scss.plugin ],
 };

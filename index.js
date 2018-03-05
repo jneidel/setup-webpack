@@ -5,11 +5,6 @@ const extractTextPlugin = require( "extract-text-webpack-plugin" );
 const browserSyncPlugin = require( "browser-sync-webpack-plugin" );
 
 // Loaders
-exports.scss = {
-  test  : /(\.scss|\.sass)$/,
-  loader: extractTextPlugin.extract( "raw-loader!sass-loader" ),
-};
-
 exports.babel = {
   test: /\.js$/,
   use : {
@@ -27,12 +22,19 @@ exports.uglify = new webpack.optimize.UglifyJsPlugin( {
 
 exports.minify = new minifyModule( {}, { comments: false } );
 
-exports.bundleCss = path => new extractTextPlugin( path );
-
 exports.browserSync = ( proxy = 8000, port = 8080 ) =>
   new browserSyncPlugin( {
     host : "localhost",
     port,
     proxy: `http://localhost:${proxy}/`,
-  }, {} )
-;
+  }, {} );
+
+// Generators
+exports.genScss = ( path ) => {
+  const plugin = new extractTextPlugin( path );
+  const loader = {
+    test  : /(\.scss|\.sass)$/,
+    loader: plugin.extract( "raw-loader!sass-loader" ),
+  };
+  return { loader, plugin };
+};

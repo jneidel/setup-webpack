@@ -20,9 +20,12 @@ $ npm install setup-webpack
 **webpack.config.js:**
 
 ```js
-const { scss, bundleCss, babel, minify, uglify, browserSync } = require( "setup-webpack" );
+const { babel, minify, uglify, browserSync, genScss, genPug } = require( "setup-webpack" );
 
 const sync = browserSync( 8000, 8080 );
+
+const scss = genScss( "app.css" );
+const pug = genPug( "app.html" );
 
 module.exports = {
   entry : "./app.bundle.js",
@@ -31,9 +34,9 @@ module.exports = {
     filename: "app.js",
   },
   module: {
-    loaders: [ babel, scss ],
+    loaders: [ babel, scss.loader, pug.loader ],
   },
-  plugins: [ minify, uglify, bundleCss( "../app.css" ), sync ],
+  plugins: [ minify, uglify, scss.plugin, pug.plugin, sync ],
 };
 ```
 
@@ -52,39 +55,55 @@ These conceptual examples will be using a simlified setup:
 ```
  ├── webpack.config.js
  ├── bundle.js
- ├── app.js
- ├── app.scss
+ ├── src/
+ │   ├── app.js
+ │   ├── app.scss
+ │   └── app.pug
  └── build/
 ```
 
 `webpack.config.js` is where we'll be working.
-`bundle.js` is the entry point for webpack and will require `app.js` and `app.scss`, which are just sample files.
+`bundle.js` is the entry point for webpack and will require the files from the `src/` folder.
 `build/` is where webpack will generate our output.
 
-### Compile scss to css
+To avoid dublication the here defined output path will be use throughout all examples.
+
+```js
+const path = require( "path" );
+
+const outputPath = path.resolve( __dirname, "build" );
+```
+
+### Transpile scss to css
 
 Transform scss to css.
 
 Working example at `examples/webpack/scss.js`.
 
+**bundle.js:**
+
+```js
+require( "./src/app.scss" );
+```
+
 **webpack.config.js:**
 
 ```js
-const { scss, bundleCss } = require( "setup-webpack" );
+const { genScss } = require( "setup-webpack" );
+
+const scss = genScss( "app.css" ) // Set output path for css file
+// This path is relative to the one set in the 'outputPath' variable (in this case build/) 
+// So the file will be saved as 'build/app.css'
 
 module.exports = {
   // Entry and output are required for webpack to work
-  entry : "./bundle.js", // Bundle only includes scss file
-  output: {
-    path: path.resolve( __dirname, "build" ),
-    filename: "app.js",
-    // Will create an empty app.js file, as no javascript is required in bundle.js
+  entry : "./bundle.js",
+  output: { path: outputPath, filename: "app.js", },
+  // Will create an empty 'build/app.js' file, as no javascript is required in 'bundle.js'
+  module: { // Transpiling happens here
+    loaders: [ scss.loader ],
   },
-  module: { // Compiling happens here
-    loaders: [ scss ],
-  },
-  plugins: [ bundleCss( "app.css" ) ],
-  // File will be saved at build/app.css, using the path set in output.path
+  plugins: [ scss.plugin ],
 }
 ```
 
@@ -94,6 +113,12 @@ Reduce file size using uglify/minify and transpile ES6+ for older browsers.
 
 Working example at `examples/webpack/prod.js`.
 
+**bundle.js:**
+
+```js
+require( "./src/app.js" );
+```
+
 **webpack.config.js:**
 
 ```js
@@ -101,10 +126,7 @@ const { babel, uglify, minify } = require( "setup-webpack" );
 
 module.exports = {
   entry : "./bundle.js", // Bundle only includes js file
-  output: {
-    path    : path.resolve( __dirname, "build" ),
-    filename: "app.js",
-  },
+  output: { path: outputPath, filename: "app.js" },
   module: { // Transpiling happens here
     loaders: [ babel ],
   }, // And compression and minfiying here
@@ -127,11 +149,8 @@ const sync = browserSync( 8000, 8080 );
 // Declaring sync as a variable works best
 
 module.exports = {
-  entry : "./bundle.js", // Bundle only includes js file
-  output: {
-    path    : path.resolve( __dirname, "build" ),
-    filename: "app.js",
-  },
+  entry : "./bundle.js",
+  output: { path: outputPath, filename: "app.js" },
   plugins: [ sync ],
 };
 ```
@@ -148,16 +167,25 @@ Using environmental variables compression and transpiling will only be triggerd 
 
 Working example at `examples/webpack/env.js`
 
+**bundle.js:**
+
+```js
+require( "./src/app.js" );
+require( "./src/app.scss" );
+```
+
 **webpack.config.js:**
 
 ```js
-const { scss, bundleCss, babel, uglify, minify, browserSync } = require( "setup-webpack" );
+const { genScss, babel, uglify, minify, browserSync } = require( "setup-webpack" );
 
 require( "dotenv" ).config( { path: "vars.env" } ); // Import env variables
 
 const prod = process.env.NODE_ENV === "prod";
 
 const sync = browserSync( 8000, 8080 );
+
+const scss = genScss( "app.css" );
 
 module.exports = {
   entry : "./app.js",
@@ -167,12 +195,12 @@ module.exports = {
   },
   module: {
     loaders: prod ?
-      [ babel, scss ] : // Transpile if prod
-      [ scss ], // Else only compile scss
+      [ babel, scss.loader ] : // Transpile if prod
+      [ scss.loader ], // Else only transpile scss
   },
   plugins: prod ?
-    [ minify, uglify, bundleCss( "app.css" ) ] : // Compress if prod
-    [ bundleCss( "app.css" ), sync ], // Else compile scss and watch for changes
+    [ minify, uglify, scss.plugin ] : // Minify if prod
+    [ scss.plugin, sync ], // Else transpile scss and watch for changes
     // Put sync at the end as your browser should reload after done is built
 };
 ```
@@ -184,7 +212,7 @@ Working example at `examples/webpack/complete.js`
 **webpack.config.js:**
 
 ```js
-const { scss, bundleCss, babel, uglify, minify, browserSync } = require( "setup-webpack" );
+const { genScss, babel, uglify, minify, browserSync } = require( "setup-webpack" );
 
 require( "dotenv" ).config( { path: "vars.env" } );
 
@@ -192,28 +220,24 @@ const prod = process.env.NODE_ENV === "prod";
 
 const sync = browserSync( 8000, 8080 );
 
-const config = { // Create config object as common base for all files
-  module: {
-    loaders: prod ?
-      [ babel, scss ] :
-      [ scss ],
-  },
-};
-
 const result = []; // Exported webpack config can be a obj or an array of objects
 
 // Array of files to be build, e.g. different routes
 [ "app", "help" ].forEach( ( name ) => {
-  result.push( Object.assign( {}, config, { // Combine base config with specific data
+  const scss = genScss( `${name}.css` );
+
+  result.push( {
     entry : `./${name}.js`,
-    output: {
-      path    : path.resolve( __dirname, "build" ),
-      filename: `${name}.js`,
+    output: { path: outputPath, filename: `${name}.js` },
+    module: {
+      loaders: prod ?
+        [ babel, scss.loader ] :
+        [ scss.loader ],
     },
     plugins: prod ?
-      [ minify, uglify, bundleCss( `${name}.css` ) ] :
-      [ bundleCss( `${name}.css` ), sync ],
-  } ) );
+      [ minify, uglify, scss.plugin ] :
+      [ scss.plugin, sync ],
+  } );
 } );
 
 module.exports = result;
@@ -227,55 +251,41 @@ Cherry-pick the parts that you need using object destructuring:
 const { scss, babel, minify } = require( "setup-webpack" );
 ```
 
-### scss
+### genScss( path ) => { loader, plugin }
 
-Type: `object` 
+Type: `function`, `generator`
 
-Unit: `loader`
+Generates scss loader and plugin for the given output path.
 
-Extracts scss from the javascript entry file and compiles it to css.
-
-```js
-const { scss } = require( "setup-webpack" );
-
-module.exports = {
-  module: {
-    loaders: [ scss ]
-  },
-}
-```
-
-Using [extract-text-webpack-plugin](https://www.npmjs.com/package/extract-text-webpack-plugin), [raw-loader](https://www.npmjs.com/package/raw-loader), [sass-loader](https://www.npmjs.com/package/sass-loader), [node-sass](https://www.npmjs.com/package/node-sass) underneath.
-
-### bundleCss( name )
-
-Type: `function`
-
-Unit: `plugin`
-
-Writes previously via `scss` extracted css data to file.
-
-#### name
+#### path
 
 Type: `string`
 
-Location where the new css file should be written. Path is relative to the `output.path`.
+Output path for the transpiled css file. Path is relative to `output.path`.
+
+#### => { loader, plugin }
+
+Type: `object`
+
+Extract scss from the javascript entry file and compiles it to css.
 
 ```js
-const { scss, bundleCss } = require( "setup-webpack" );
+const { genScss } = require( "setup-webpack" );
+
+const scss = genScss( "app.css" ); // build/app.css
 
 module.exports = {
   output: {
     path: path.resolve( __dirname, "build" ),
   },
   module: {
-    loaders: [ scss ]
+    loaders: [ scss.loader ]
   },
-  plugins: [ bundleCss( "app.css" ) ], // Written as build/app.css
+  plugins [ scss.plugin ]
 }
 ```
-          
-Using [extract-text-webpack-plugin](https://www.npmjs.com/package/extract-text-webpack-plugin) underneath.
+
+Using [extract-text-webpack-plugin](https://www.npmjs.com/package/extract-text-webpack-plugin), [raw-loader](https://www.npmjs.com/package/raw-loader), [sass-loader](https://www.npmjs.com/package/sass-loader), [node-sass](https://www.npmjs.com/package/node-sass) underneath.
 
 ### babel
 
