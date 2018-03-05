@@ -1,7 +1,7 @@
 {
   "name": "setup-webpack",
   "version": "1.1.0",
-  "description": "Opinionated collection of webpack plugins and loaders with explanations of common use cases",
+  "description": "Opinionated module of webpack plugins and loaders for simple setup with explanations of common use cases",
   "repository": "jneidel/setup-webpack",
   "license": "MIT",
   "author": {
@@ -49,9 +49,8 @@
   "keywords": [
     "webpack",
     "setup",
-    "use-case",
-    "guide",
-    "webpack-plugin",
-    "webpack-loader"
+    "webpack-config",
+    "webpack-boilerplate",
+    "boilerplate"
   ]
 }

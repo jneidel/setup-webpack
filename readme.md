@@ -1,6 +1,6 @@
 # setup-webpack
 
-> Opinionated collection of webpack plugins and loaders with explanations of common use cases
+> Opinionated module of webpack plugins and loaders for simple setup with explanations of common use cases
 
 [![](https://img.shields.io/badge/license-MIT-green.svg)](https://github.com/jneidel/setup-webpack/blob/master/licence)
 [![](https://img.shields.io/npm/dw/setup-webpack.svg)](https://www.npmjs.com/package/setup-webpack)
