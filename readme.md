@@ -76,6 +76,28 @@ const path = require( "path" );
 const outputPath = path.resolve( __dirname, "build" );
 ```
 
+### Get up to speed with webpack
+
+Before starting let's make sure we know what a basic webpack config looks like:
+
+(For webpack to find your config confirm to the naming convention and save the config in the project root.)
+
+**webpack.config.js:**
+
+```js
+module.exports = { // Node function to specfiy what will be imported with require
+  entry: "./src/index.js", // Entry file that will be loaded into webpack,
+  output: {                // will be a bundle in our case
+    path: path.resolve( __dirname, "build" ) // Specifies the output path for all files
+    filename: "app.js", // Name of the main file to be exported
+  }
+};
+```
+
+`entry` and `output` (`output.path` & `output.filename`) are required in every config.
+
+For a more in-depth intro check out the [webpack docs](https://webpack.js.org/guides/getting-started/).
+
 ### Transpile scss to css
 
 Transform [scss](https://sass-lang.com/) or (sass) to css.
@@ -98,7 +120,6 @@ const scss = genScss( "app.css" ) // Set output path for css file
 // So the file will be saved as 'build/app.css'
 
 module.exports = {
-  // Entry and output are required for webpack to work
   entry : "./bundle.js",
   output: { path: outputPath, filename: "app.js", },
   // Will create an empty 'build/app.js' file, as no javascript is required in 'bundle.js'
@@ -298,7 +319,7 @@ const result = []; // Exported webpack config can be a obj or an array of object
 module.exports = result;
 ```
 
-For each `require` in the entry file, the corresponding, transpiled output file will be generated.
+For each `require` in the entry file, the corresponding, transpiled output file will be generated. `Require`ing multiple files of the same type will bundle them together in a single output file, making for an easier import into your html document and an easier editing of the contents for that file.
 
 Omission of `require`d files does not have any consequences, only the `*.bundle.js` file is necessary for the build to complete.
 

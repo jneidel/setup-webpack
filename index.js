@@ -1,6 +1,5 @@
 const webpack = require( "webpack" );
 const pathModule = require( "path" );
-const minifyModule = require( "babel-minify-webpack-plugin" );
 const extractTextPlugin = require( "extract-text-webpack-plugin" );
 const browserSyncPlugin = require( "browser-sync-webpack-plugin" );
 
