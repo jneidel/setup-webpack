@@ -30,11 +30,22 @@ exports.browserSync = ( proxy = 8000, port = 8080 ) =>
   }, {} );
 
 // Generators
-exports.genScss = ( path ) => {
+const genScss = ( path ) => {
   const plugin = new extractTextPlugin( path );
   const loader = {
     test  : /(\.scss|\.sass)$/,
     loader: plugin.extract( "raw-loader!sass-loader" ),
+  };
+  return { loader, plugin };
+};
+exports.genScss = genScss;
+exports.genSass = genScss;
+
+exports.genPug = ( path ) => {
+  const plugin = new extractTextPlugin( path );
+  const loader = {
+    test  : /\.pug$/,
+    loader: plugin.extract( "raw-loader!pug-html-loader" ),
   };
   return { loader, plugin };
 };

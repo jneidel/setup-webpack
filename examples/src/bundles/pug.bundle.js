@@ -1,0 +1,1 @@
+require( "../pug/index.pug" );
