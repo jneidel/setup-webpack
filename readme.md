@@ -7,7 +7,12 @@
 
 Reduce boilerplate creating your webpack config and keep your package.json slim.
 
-Includes abstractions for transforming scss and pug, transpiling and polyfill your javascript, minfication and reloading the browser on changes. All usage patterns described with clear examples.
+Includes abstractions for transforming scss and pug, transpiling and polyfilling your javascript, minfication and reloading the browser on changes. All usage patterns are described with clear examples.
+
+- [Install](https://github.com/jneidel/setup-webpack#install)
+- [Usage](https://github.com/jneidel/setup-webpack#usage)
+- [Usage Patterns](https://github.com/jneidel/setup-webpack#usage-patterns)
+- [API](https://github.com/jneidel/setup-webpack#api)
 
 ## Install
 
@@ -511,18 +516,6 @@ Default: `8080`
 Describes the port browser-sync will be running on. Only browser tabs connected to this port will be reloaded.
 
 Using [browser-sync](https://www.npmjs.com/package/browser-sync), [browser-sync-webpack-plugin](https://www.npmjs.com/package/browser-sync-webpack-plugin) underneath.
-
-
-```js
-const { minify } = require( "setup-webpack" );
-
-module.exports = {
-  plugins: [ minify ]
-}
-```
-
-Using [babel-minify-webpack-plugin](https://www.npmjs.com/package/babel-minify-webpack-plugin) underneath.
-
 
 ## License
 
