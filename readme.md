@@ -5,7 +5,7 @@
 [![](https://img.shields.io/badge/license-MIT-green.svg)](https://github.com/jneidel/setup-webpack/blob/master/licence)
 [![](https://img.shields.io/npm/dw/setup-webpack.svg)](https://www.npmjs.com/package/setup-webpack)
 
-Reduce boilerplate creating your webpack config and keep your package.json slim.
+Reduce boilerplate when creating your webpack config and keep your package.json slim.
 
 Includes abstractions for transforming scss and pug, transpiling and polyfilling your javascript, minfication and reloading the browser on changes. All usage patterns are described with clear examples.
 
@@ -73,7 +73,7 @@ These conceptual examples will be using a simlified setup:
 `bundle.js` is the entry point for webpack and will require the files from the `src/` folder.
 `build/` is where webpack will generate our output.
 
-To avoid dublication the here defined output path will be use throughout all examples.
+To avoid duplication, the output path we define here will be used throughout all examples.
 
 ```js
 const path = require( "path" );
@@ -83,14 +83,14 @@ const outputPath = path.resolve( __dirname, "build" );
 
 ### Get up to speed with webpack
 
-Before starting let's make sure we know what a basic webpack config looks like:
+Before starting, let's make sure we know what a basic webpack config looks like:
 
-(For webpack to find your config confirm to the naming convention and save the config in the project root.)
+(For webpack to find your config, give the file the conventional name `webpack.config.js` and save it in the project root.)
 
 **webpack.config.js:**
 
 ```js
-module.exports = { // Node function to specfiy what will be imported with require
+module.exports = {
   entry: "./src/index.js", // Entry file that will be loaded into webpack,
   output: {                // will be a bundle in our case
     path: path.resolve( __dirname, "build" ) // Specifies the output path for all files
@@ -101,9 +101,9 @@ module.exports = { // Node function to specfiy what will be imported with requir
 
 `entry` and `output` (`output.path` & `output.filename`) are required in every config.
 
-For a more in-depth intro check out the [webpack docs](https://webpack.js.org/guides/getting-started/).
+For a more in-depth intro, check out the [webpack docs](https://webpack.js.org/guides/getting-started/).
 
-### Transpile scss to css
+### Transform scss into css
 
 Transform [scss](https://sass-lang.com/) or (sass) to css.
 
@@ -135,7 +135,7 @@ module.exports = {
 }
 ```
 
-### Transpile pug to html
+### Transform pug into html
 
 Transform [pug](https://github.com/pugjs/pug) to html.
 
@@ -168,7 +168,7 @@ module.exports = {
 
 ### Minify and transpile ES6+
 
-Reduce file size using uglify/minify, polyfill and transpile ES6+ for older browsers using babel.
+Reduce file size using uglify/minify and, for compatability with older browsers, polyfill and transpile ES6+ using babel.
 
 Working example at [`examples/webpack/prod.js`](https://github.com/jneidel/setup-webpack/blob/master/examples/webpack/prod.js).
 
@@ -185,7 +185,7 @@ const { babel, uglify } = require( "setup-webpack" );
 
 module.exports = {
   entry : polyfill( "./bundle.js" ), // Bundle only includes js file
-  // Wrap bundle in polyfill function to polyfill the given bundle
+  // Wrap bundle in a polyfill function to polyfill the given bundle
   output: { path: outputPath, filename: "app.js" },
   module: { // Transpiling happens here
     loaders: [ babel ],
@@ -194,11 +194,11 @@ module.exports = {
 };
 ```
 
-As this process takes some time you only want to run this in an production environment and not while developing.
+Because this process takes some time, you only want to run this in a production environment and not during development.
 
 ### Differentiate between development and production env
 
-Using environmental variables compression and transpiling will only be triggerd in a production evironment.
+Compression and transpiling will only be triggerd by enviroment variables that indicate a production evironment.
 
 Working example at [`examples/webpack/env.js`](https://github.com/jneidel/setup-webpack/blob/master/examples/webpack/env.js).
 
@@ -240,7 +240,7 @@ module.exports = {
 
 ### Reload browser on changes
 
-Any changes on the files include in the `bundle.js` will cause a rebuild and reload of the browser.
+Any changes to the files included in the `bundle.js` will cause the project to be rebuild and the browser to reload.
 
 Working example at [`examples/webpack/sync.js`](https://github.com/jneidel/setup-webpack/blob/master/examples/webpack/sync.js).
 
@@ -257,17 +257,17 @@ module.exports = {
   entry : "./bundle.js",
   output: { path: outputPath, filename: "app.js" },
   plugins: [ sync ],
-  // Put sync at the end as your browser should reload after done is built
+  // Put sync at the end so that your browser reloads after the build has completed
 };
 ```
 
-The script has to run webpack in watch (-w) mode for browser-sync to be triggerd once webpack has rebuilt.
+The script has to run webpack in watch (-w) mode in order for browser-sync to be triggerd once the project has been rebuilt.
 
 ```
 $ webpack -w
 ```
 
-If this command does not work in your terminal, try installing the webpack cli using `npm install -g webpack` or run the command via a npm script (in your `package.json` under `scripts`), for example `"build": "webpack -w"` and `npm run build`.
+If this command does not work in your terminal, try installing the webpack-cli using `npm install -g webpack` or run the command via a npm script (in your `package.json` under `scripts`), for example `"build": "webpack -w"` and `npm run build`.
 
 ### Generating more than one output file
 
@@ -299,7 +299,7 @@ const prod = process.env.NODE_ENV === "prod";
 
 const sync = browserSync( 8000, 8080 );
 
-const result = []; // Exported webpack config can be a obj or an array of objects
+const result = []; // Exported webpack config can be an obj or an array of objects
 
 // Array of files to be build, e.g. different routes
 [ "app", "help" ].forEach( ( name ) => {
@@ -324,9 +324,9 @@ const result = []; // Exported webpack config can be a obj or an array of object
 module.exports = result;
 ```
 
-For each `require` in the entry file, the corresponding, transpiled output file will be generated. `Require`ing multiple files of the same type will bundle them together in a single output file, making for an easier import into your html document and an easier editing of the contents for that file.
+For each `require` in the entry file, this webpack config will output a transpiled file. If multiple files of the same type are `require`d they will be bundled together in a single output file, making it easier for you to import them into your html document and edit their contents.
 
-Omission of `require`d files does not have any consequences, only the `*.bundle.js` file is necessary for the build to complete.
+If no files of a specific type `js|scss|pug` are `require`d in, webpack will simply not generate an output file of that type. Only the `*.bundle.js` file is necessary for the build to complete.
 
 ## API
 
@@ -349,7 +349,7 @@ Type: `object`
 
 Unit: `loader`
 
-Transpiling ES6+ javascript for older browsers ([more](https://babeljs.io/)) and minify contents (shrinks down files, removing whitespace, redundant characters, [more](https://babeljs.io/blog/2016/08/30/babili)).
+This loader transpiles ES6+ javascript for older browsers ([more on babel](https://babeljs.io/)) and minifies contents (shrinks down files, removing whitespace, redundant characters, [more on minify](https://babeljs.io/blog/2016/08/30/babili)).
 
 Uses the [env](https://babeljs.io/docs/plugins/preset-env/) preset as well the [minifier](https://github.com/babel/minify) as options.
 
@@ -363,7 +363,7 @@ module.exports = {
 }
 ```
 
-Using [babel-loader](https://www.npmjs.com/package/babel-loader), [babel-preset-env](https://www.npmjs.com/package/babel-preset-env), [babel-minify-webpack-plugin](https://www.npmjs.com/package/babel-minify-webpack-plugin), [babel-core](https://www.npmjs.com/package/babel-core) underneath.
+Uses [babel-loader](https://www.npmjs.com/package/babel-loader), [babel-preset-env](https://www.npmjs.com/package/babel-preset-env), [babel-minify-webpack-plugin](https://www.npmjs.com/package/babel-minify-webpack-plugin), [babel-core](https://www.npmjs.com/package/babel-core) under the hood.
 
 ### uglify
 
@@ -381,13 +381,13 @@ module.exports = {
 }
 ```
 
-Using [webpack](https://www.npmjs.com/package/webpack).optimize.UglifyJsPlugin underneath.
+Uses [webpack](https://www.npmjs.com/package/webpack).optimize.UglifyJsPlugin under the hood.
 
 ### polyfill( path )
 
 Type: `function`
 
-Polyfills functions and methods not available in all browsers yet, [more](https://babeljs.io/docs/usage/polyfill/).
+Polyfills functions and methods not yet available in all browsers. For more information see [polyfill](https://babeljs.io/docs/usage/polyfill/).
 
 ```js
 const { polyfill } = require( "setup-webpack" );
@@ -409,7 +409,7 @@ Path to entry point bundle, which requires the code to be build.
 require( "./app.js" );
 ```
 
-Using [babel-polyfill](https://www.npmjs.com/package/babel-polyfill) underneath.
+Uses [babel-polyfill](https://www.npmjs.com/package/babel-polyfill) under the hood.
 
 ### genScss( path ) => { loader, plugin }
 
@@ -427,7 +427,7 @@ Output path for the transpiled css file. Path is relative to `output.path`.
 
 Type: `object`
 
-Extract scss from the javascript entry file and compiles it to css.
+Extract scss from the javascript entry file and compile it to css.
 
 ```js
 const { genScss } = require( "setup-webpack" );
@@ -445,7 +445,7 @@ module.exports = {
 }
 ```
 
-Using [extract-text-webpack-plugin](https://www.npmjs.com/package/extract-text-webpack-plugin), [raw-loader](https://www.npmjs.com/package/raw-loader), [sass-loader](https://www.npmjs.com/package/sass-loader), [node-sass](https://www.npmjs.com/package/node-sass) underneath.
+Uses [extract-text-webpack-plugin](https://www.npmjs.com/package/extract-text-webpack-plugin), [raw-loader](https://www.npmjs.com/package/raw-loader), [sass-loader](https://www.npmjs.com/package/sass-loader), [node-sass](https://www.npmjs.com/package/node-sass) under the hood.
 
 ### genPug( path ) => { loader, plugin }
 
@@ -465,7 +465,7 @@ Output path for the transpiled html file. Path is relative to `output.path`.
 
 Type: `object`
 
-Extract pug from the javascript entry file and compiles it to html.
+Extract pug from the javascript entry file and compile it to html.
 
 ```js
 const { genPug } = require( "setup-webpack" );
@@ -483,7 +483,7 @@ module.exports = {
 }
 ```
 
-Using [extract-text-webpack-plugin](https://www.npmjs.com/package/extract-text-webpack-plugin), [pug](https://www.npmjs.com/package/pug), [pug-html-loader](https://www.npmjs.com/package/pug-html-loader) underneath.
+Uses [extract-text-webpack-plugin](https://www.npmjs.com/package/extract-text-webpack-plugin), [pug](https://www.npmjs.com/package/pug), [pug-html-loader](https://www.npmjs.com/package/pug-html-loader) under the hood.
 
 ### browserSync( [proxy], [port] )
 
@@ -491,7 +491,7 @@ Type: `function`
 
 Unit: `plugin`
 
-Reloads browers windows connected on given port after webpack rebuilt the resources.
+Reloads brower windows connected on a given port, after webpack has rebuilt.
 
 The proxy as well as the port are using localhost.
 
@@ -513,9 +513,9 @@ Type: `number`
 
 Default: `8080`
 
-Describes the port browser-sync will be running on. Only browser tabs connected to this port will be reloaded.
+Describes the port which browser-sync will be running on. Only browser windows connected to this port will be reloaded.
 
-Using [browser-sync](https://www.npmjs.com/package/browser-sync), [browser-sync-webpack-plugin](https://www.npmjs.com/package/browser-sync-webpack-plugin) underneath.
+Uses [browser-sync](https://www.npmjs.com/package/browser-sync), [browser-sync-webpack-plugin](https://www.npmjs.com/package/browser-sync-webpack-plugin) under the hood.
 
 ## License
 
