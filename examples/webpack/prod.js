@@ -1,16 +1,20 @@
 const path = require( "path" );
-const { uglify, babel, polyfill } = require( "../../index" );
+const { babel, polyfill } = require( "../.." );
 
 // Run: $ npm run prod
 
 module.exports = {
-  entry : polyfill( "./examples/src/bundles/js.bundle.js" ),
+  mode  : "production",
+  entry : polyfill( "./examples/src/bundles/js.bundle.js" ), // Bundle only includes js file
+  // Wrap bundle in a polyfill function to polyfill ES6 functions
   output: {
     path    : path.resolve( __dirname, "../build/js" ),
     filename: "app.js",
   },
   module: {
-    loaders: [ babel ],
+    rules: [ babel ], // Transpiling happens here
   },
-  plugins: [ uglify ],
+  optimization: {
+    minimize: true, // And minfiying here
+  },
 };

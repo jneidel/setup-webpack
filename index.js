@@ -3,7 +3,7 @@ const browserSyncPlugin = require( "browser-sync-webpack-plugin" );
 const MiniCssExtractPlugin = require( "mini-css-extract-plugin" );
 const OptimizeCSSAssetsPlugin = require( "optimize-css-assets-webpack-plugin" );
 
-// Rules
+// Rules (Loaders)
 exports.babel = {
   test: /\.js$/,
   use : {
@@ -40,6 +40,7 @@ const genScss = ( path ) => ( {
 exports.genScss = genScss;
 exports.genSass = genScss;
 
+// Plugins
 exports.browserSync = ( proxy = 8000, port = 8080 ) =>
   new browserSyncPlugin( {
     host : "localhost",

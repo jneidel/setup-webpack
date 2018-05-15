@@ -1,6 +1,6 @@
 # setup-webpack
 
-> Opinionated module of webpack plugins and rules for simple setup with explanations of common use cases
+> Opinionated module of webpack loaders/plugins for simplified usage with examples for common use cases
 
 [![](https://img.shields.io/npm/dw/setup-webpack.svg?style=flat-square)](https://www.npmjs.com/package/setup-webpack)
 [![](https://img.shields.io/badge/license-MIT-green.svg?style=flat-square)](https://github.com/jneidel/setup-webpack/blob/master/licence)
@@ -15,15 +15,14 @@ Includes abstractions for transforming scss and pug, transpiling and polyfilling
 <!-- toc -->
 
 - [Install](#install)
-  * [Webpack 3](#webpack-3)
 - [Usage](#usage)
-- [Usage Patterns](#usage-patterns)
+- [Examples](#examples)
   * [Get up to speed with webpack](#get-up-to-speed-with-webpack)
   * [Transform scss into css](#transform-scss-into-css)
   * [Transform pug into html](#transform-pug-into-html)
-  * [Minify and transpile ES6+](#minify-and-transpile-es6)
+  * [Minify and transpile ES6 JavaScript](#minify-and-transpile-es6-javascript)
+  * [Reload browser on file changes](#reload-browser-on-file-changes)
   * [Differentiate between development and production env](#differentiate-between-development-and-production-env)
-  * [Reload browser on changes](#reload-browser-on-changes)
   * [Generating more than one output file](#generating-more-than-one-output-file)
 - [API](#api)
   * [babel](#babel)
@@ -39,25 +38,143 @@ Includes abstractions for transforming scss and pug, transpiling and polyfilling
 
 ## Install
 
-**Webpack 4:**
-
-
 [![](https://img.shields.io/npm/v/setup-webpack.svg?style=flat-square)](https://www.npmjs.com/package/setup-webpack)
+![](https://img.shields.io/badge/webpack-v4-blue.svg?style=flat-square)
 
 ```
 $ npm install setup-webpack
 ```
 
-**Webpack 3:**
-
+<details>
+<summary><strong>Install version <code>v1</code></strong></summary>
+<br>
 
 [![](https://img.shields.io/badge/npm-1.2.1-blue.svg?style=flat-square)](https://www.npmjs.com/package/setup-webpack/v/1.2.1)
+![](https://img.shields.io/badge/webpack-v3-blue.svg?style=flat-square)
 
 ```
 $ npm install setup-webpack@1
 ```
 
-The documentation for `v1.2.1` can be found [here](https://github.com/jneidel/setup-webpack/tree/822e8d2c383121814f9c5b24634a05a41941596f).
+The documentation for `v1` can be found [here](https://github.com/jneidel/setup-webpack/tree/822e8d2c383121814f9c5b24634a05a41941596f).
+
+</details>
+
+<details>
+<summary><strong>Upgrade to version <code>v2</code></strong></summary>
+<br>
+
+Version `v2` upgrades webpack to `v4`, introducing a few breaking changes:
+
+**Require `mode`:**
+
+Either `development` or `production`.
+
+```js
+{
+  mode: "production",
+}
+```
+
+**Rename `loaders` field to `rules`:**
+
+`v1`:
+
+```js
+{
+  module: {
+    loaders: [ babel, ... ]
+  }
+}
+```
+
+`v2`:
+
+```js
+{
+  module: {
+    rules: [ babel, ... ]
+  }
+}
+```
+
+**Deprecate `uglify`:**
+
+This deprecates the `uglify` plugin, as it is included in using `optimization.minimize = true`.
+
+`v1`:
+
+```js
+{
+  plugins: [ uglify ]
+}
+```
+
+`v2`:
+
+```js
+{
+  optimization: {
+    minimize : true
+  }
+}
+```
+
+**Change `genPug` to `pug`:**
+
+`v1`:
+
+```js
+const pug = genPug( "index.html" );
+
+{
+  module: {
+    loaders: [ pug.loader ]
+  },
+  plugins: [ pug.plugin ]
+}
+```
+
+`v2`:
+
+```js
+{
+  module: {
+    rules: [ pug( "index.html" ) ]
+  }
+}
+```
+
+**Change `genScss` syntax:**
+
+`v1`:
+
+```js
+const scss = genPug( "styles.css" );
+
+{
+  module: {
+    loaders: [ scss.loader ]
+  },
+  plugins: [ scss.plugin ]
+}
+```
+
+`v2`:
+
+```js
+{
+  module: {
+    rules: [ scss.rule ]
+  },
+  plugins: [ scss.plugin ]
+  optimization: {
+    minimizer: [ scss.minimizer ],
+  }
+}
+```
+
+</details>
 
 ## Usage
 
@@ -80,7 +197,7 @@ module.exports = {
   module: {
     rules: [ babel, pug( "app.html" ), scss.rule ],
   },
-  plugins: [ uglify, scss.plugin, sync ],
+  plugins: [ scss.plugin, sync ],
   optimization: {
     minimize: true,
     minimizer: [ scss.minimizer ],
@@ -88,286 +205,126 @@ module.exports = {
 };
 ```
 
-## Usage Patterns
+## Examples
 
-All working examples can be found in the [`examples/webpack`](https://github.com/jneidel/setup-webpack/tree/master/examples/webpack) folder.
+All examples can be found in the [`examples/webpack`](examples/webpack) folder.
 
-Clone the repo to follow along with the examples:
+Clone the repo to run the examples:
 
 ```
 $ git clone https://github.com/jneidel/setup-webpack.git
 ```
 
-These conceptual examples will be using a simlified setup:
-
-```
- ├── webpack.config.js
- ├── bundle.js
- ├── src/
- │   ├── app.js
- │   ├── app.scss
- │   └── app.pug
- └── build/
-```
-
-`webpack.config.js` is where we'll be working.
-`bundle.js` is the entry point for webpack and will require the files from the `src/` folder.
-`build/` is where webpack will generate our output.
-
-To avoid duplication, the output path we define here will be used throughout all examples.
-
-```js
-const path = require( "path" );
-
-const outputPath = path.resolve( __dirname, "build" );
-```
-
 ### Get up to speed with webpack
 
-Before starting, let's make sure we know what a basic webpack config looks like:
+The default config location is in the root of the project, in a file named `webpack.config.js`.
 
-(For webpack to find your config, give the file the conventional name `webpack.config.js` and save it in the project root.)
+The files to transpile are `require`d or `importe`d into a single bundle file:
+
+**app.bundle.js:**
+
+```js
+require( "./js/app" );
+require( "./js/global-variables" );
+require( "axios" );
+
+require( "./scss/base-styles.scss" );
+require( "./scss/app.scss" );
+
+require( "./pug/app.pug" );
+```
+
+The bundle file will serve as an entry point for webpack, which will then split up the different file types again. Files of the same type (eg: `.js`) will be bundled into a single output file.
 
 **webpack.config.js:**
 
 ```js
+const path = require( "path" );
+const { pug, genScss } = require( "setup-webpack" );
+
+const scss = genScss( "styles.css" ); // Set output path for css file
+
 module.exports = {
-  mode : "development",
-  entry: "./src/index.js", // Entry file that will be loaded into webpack,
-  output: {                // will be a bundle in our case
+  mode : "development", // Run webpack either on 'development' or 'production' mode
+  entry: "./app.bundle.js", // Entry file that will be loaded into webpack,
+  output: {                 // will be a bundle in our case
     path: path.resolve( __dirname, "build" ) // Specifies the output path for all files
-    filename: "app.js", // Name of the main file to be exported
+    filename: "scripts.js", // Name of the main file to be exported, which
+  },                        // will even be exported if no js files are being imported
+  module: {
+    rules: [
+      scss.rule, // Extract scss and turn it into css
+      pug( "index.html" ) // Extract pug, turn into html and save to path
+    ] 
   },
+  plugins: [ scss.plugin ] // Save css to above specified path
   optimization: { // Production optimizations
-    minimize: true,
+    minimize: true, // Minimize js
+    minimizer: [ scss.minimizer ], // Minimize css
   },
 };
 ```
 
-`entry` and `output` (`output.path` & `output.filename`) are required in every config.
+**Required in every config:**
+
+- `mode`
+- `entry`
+- `output`
+    - `output.path`
+    - `output.filename`
 
 For a more in-depth intro, check out the [webpack docs](https://webpack.js.org/guides/getting-started/).
 
 ### Transform scss into css
 
-Transform [scss](https://sass-lang.com/) or (sass) to css.
+Transform [scss](https://sass-lang.com/) or (sass) files to css.
 
-Working example at [`examples/webpack/scss.js`](https://github.com/jneidel/setup-webpack/blob/master/examples/webpack/scss.js).
-
-**bundle.js:**
-
-```js
-require( "./src/app.scss" );
-```
-
-**webpack.config.js:**
-
-```js
-const { genScss } = require( "setup-webpack" );
-
-const scss = genScss( "app.css" ) // Set output path for css file
-// This path is relative to the one set in the 'outputPath' variable (in this case build/) 
-// So the file will be saved as 'build/app.css'
-
-module.exports = {
-  entry : "./bundle.js",
-  output: { path: outputPath, filename: "app.js", },
-  // Will create an empty 'build/app.js' file, as no javascript is required in 'bundle.js'
-  module: { // Transpiling happens here
-    rules: [ scss.rule ],
-  },
-  plugins: [
-    scss.plugin,
-  ],
-  optimization: { // If mode set to 'production' use scss minimizer
-    minimizer: [ scss.minimizer ],
-  },
-}
-```
+View commented example at [`examples/webpack/scss.js`](examples/webpack/scss.js).
 
 ### Transform pug into html
 
 Transform [pug](https://github.com/pugjs/pug) to html.
 
-Working example at [`examples/webpack/pug.js`](https://github.com/jneidel/setup-webpack/blob/master/examples/webpack/pug.js).
+View example at [`examples/webpack/pug.js`](examples/webpack/pug.js).
 
-**bundle.js:**
+### Minify and transpile ES6 JavaScript
 
-```js
-require( "./src/app.pug" );
-```
+Reduce file size minify your code and, for compatability with older browsers, polyfill and transpile ES6+ using babel.
 
-**webpack.config.js:**
-
-```js
-const { pug } = require( "setup-webpack" );
-
-module.exports = {
-  entry : "./bundle.js",
-  output: { path: outputPath, filename: "app.js" },
-  module: {
-    rules: [ pug( "../html/index.html" ) ],
-  },
-};
-```
-
-### Minify and transpile ES6+
-
-Reduce file size using uglify/minify and, for compatability with older browsers, polyfill and transpile ES6+ using babel.
-
-Working example at [`examples/webpack/prod.js`](https://github.com/jneidel/setup-webpack/blob/master/examples/webpack/prod.js).
-
-**bundle.js:**
-
-```js
-require( "./src/app.js" );
-```
-
-**webpack.config.js:**
-
-```js
-const { babel, uglify } = require( "setup-webpack" );
-
-module.exports = {
-  entry : polyfill( "./bundle.js" ), // Bundle only includes js file
-  // Wrap bundle in a polyfill function to polyfill the given bundle
-  output: { path: outputPath, filename: "app.js" },
-  module: { // Transpiling happens here
-    loaders: [ babel ],
-  }, // And compression and minfiying here
-  plugins: [ uglify ],
-};
-```
+View working commented example at [`examples/webpack/prod.js`](examples/webpack/prod.js).
 
 Because this process takes some time, you only want to run this in a production environment and not during development.
 
-### Differentiate between development and production env
+### Reload browser on file changes
 
-Compression and transpiling will only be triggerd by enviroment variables that indicate a production evironment.
+Any changes to the files included in the bundle will cause the project to be rebuild and the browser to reload.
 
-Working example at [`examples/webpack/env.js`](https://github.com/jneidel/setup-webpack/blob/master/examples/webpack/env.js).
-
-**bundle.js:**
-
-```js
-require( "./src/app.js" );
-require( "./src/app.scss" );
-```
-
-**webpack.config.js:**
-
-```js
-const { genScss, babel, uglify, browserSync, polyfill } = require( "setup-webpack" );
-
-require( "dotenv" ).config( { path: "vars.env" } ); // Import env variables
-
-const prod = process.env.NODE_ENV === "prod";
-
-const sync = browserSync( 8000, 8080 );
-
-const scss = genScss( "app.css" );
-
-const entry = prod ? polyfill( "./app.js" ) : "./app.js";
-
-module.exports = {
-  entry,
-  output: { path outputPath, filename: "app.js" },
-  module: {
-    loaders: prod ?
-      [ babel, scss.loader ] : // Transpile js and scss if prod
-      [ scss.loader ], // Else only transpile scss
-  },
-  plugins: prod ?
-    [ uglify, scss.plugin ] : // Minify if prod
-    [ scss.plugin ], // Else only transpile scss
-};
-```
-
-### Reload browser on changes
-
-Any changes to the files included in the `bundle.js` will cause the project to be rebuild and the browser to reload.
-
-Working example at [`examples/webpack/sync.js`](https://github.com/jneidel/setup-webpack/blob/master/examples/webpack/sync.js).
-
-**webpack.config.js:**
-
-```js
-const { browserSync } = require( "setup-webpack" );
-
-const sync = browserSync( 8000, 8080 );
-// Declaring sync as a variable works best
-
-// browserSync should only be used during development
-module.exports = {
-  entry : "./bundle.js",
-  output: { path: outputPath, filename: "app.js" },
-  plugins: [ sync ],
-  // Put sync at the end so that your browser reloads after the build has completed
-};
-```
+View example at [`examples/webpack/sync.js`](examples/webpack/sync.js).
 
 The script has to run webpack in watch (-w) mode in order for browser-sync to be triggerd once the project has been rebuilt.
 
-```
+```zsh
 $ webpack -w
 ```
 
-If this command does not work in your terminal, try installing the webpack-cli using `npm install -g webpack` or run the command via a npm script (in your `package.json` under `scripts`), for example `"build": "webpack -w"` and `npm run build`.
+Running this command in your terminal will require you to install the webpack-cli, to make use of the local installation use the command in a npm script.
+
+```
+"scripts": {
+  "watch": "webpack -w"
+}
+```
+
+### Differentiate between development and production env
+
+Minification and transpiling will only be triggerd by enviroment variables that indicate a production evironment.
+
+View working example at [`examples/webpack/env.js`](examples/webpack/env.js).
+
 
 ### Generating more than one output file
 
-Working example at [`examples/webpack/complete.js`](https://github.com/jneidel/setup-webpack/blob/master/examples/webpack/complete.js).
-
-**app.bundle.js:**
-
-```js
-require( "./src/app.js" );
-require( "./src/app.scss" );
-```
-
-**help.bundle.js:**
-
-```js
-require( "./src/help.js" );
-require( "./src/help.scss" );
-require( "./src/help.pug" );
-```
-
-**webpack.config.js:**
-
-```js
-const { genScss, babel, uglify, browserSync, polyfill } = require( "setup-webpack" );
-
-require( "dotenv" ).config( { path: "vars.env" } );
-
-const prod = process.env.NODE_ENV === "prod";
-
-const sync = browserSync( 8000, 8080 );
-
-const result = []; // Exported webpack config can be an obj or an array of objects
-
-// Array of files to be build, e.g. different routes
-[ "app", "help" ].forEach( ( name ) => {
-  const scss = genScss( `${name}.css` );
-  const pug = genPug( `${name}.html` );
-
-  const entry = prod ? polyfill( `./${name}.bundle.js` ) : `./${name}.bundle.js`;
-  result.push( {
-    entry,
-    output: { path: outputPath, filename: `${name}.js` },
-    module: {
-      loaders: prod ?
-        [ babel, scss.loader, pug.loader ] :
-        [ scss.loader, pug.loader ],
-    },
-    plugins: prod ?
-      [ uglify, scss.plugin, pug.plugin ] :
-      [ scss.plugin, pug.plugin, sync ],
-  } );
-} );
-
-module.exports = result;
-```
+View example at [`examples/webpack/complete.js`](examples/webpack/complete.js).
 
 For each `require` in the entry file, this webpack config will output a transpiled file. If multiple files of the same type are `require`d they will be bundled together in a single output file, making it easier for you to import them into your html document and edit their contents.
 
@@ -503,7 +460,7 @@ Type: `number`
 
 Default: `8000`
 
-Describes the port your app is running on.
+Describes the port your server/app is running on.
 
 **port:**
 
@@ -514,6 +471,22 @@ Type: `number`
 Default: `8080`
 
 Describes the port which browser-sync will be running on. Only browser windows connected to this port will be reloaded.
+
+**Without a server:**
+
+Currently not supported in this module, but can be easily done using the browser-sync-cli:
+
+In your npm package.json:
+
+```json
+"scripts": {
+  "build": "webpack -w",
+  "sync": "browser-sync --server --files [ 'dist' ]", // Files/dirs to watch for changes
+  "watch": "concurrently 'npm run build' 'npm run sync' --names '📦,🔄' --prefix name",
+}
+```
+
+This script requires the global installation of [`concurrently`](https://www.npmjs.com/package/concurrently).
 
 Uses [browser-sync](https://www.npmjs.com/package/browser-sync), [browser-sync-webpack-plugin](https://www.npmjs.com/package/browser-sync-webpack-plugin) under the hood.
 
