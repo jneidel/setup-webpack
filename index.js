@@ -1,9 +1,9 @@
-const webpack = require( "webpack" );
 const pathModule = require( "path" );
-const extractTextPlugin = require( "extract-text-webpack-plugin" );
 const browserSyncPlugin = require( "browser-sync-webpack-plugin" );
+const MiniCssExtractPlugin = require( "mini-css-extract-plugin" );
+const OptimizeCSSAssetsPlugin = require( "optimize-css-assets-webpack-plugin" );
 
-// Loaders
+// Rules
 exports.babel = {
   test: /\.js$/,
   use : {
@@ -14,31 +14,31 @@ exports.babel = {
   },
 };
 
-// Generators
-const genScss = ( path ) => {
-  const plugin = new extractTextPlugin( path );
-  const loader = {
-    test  : /(\.scss|\.sass)$/,
-    loader: plugin.extract( "raw-loader!sass-loader" ),
-  };
-  return { loader, plugin };
-};
+exports.pug = ( path ) => ( {
+  test: /\.pug/,
+  use : [
+    `file-loader?name=${path}`,
+    "extract-loader",
+    "html-loader",
+    "pug-html-loader",
+  ],
+} );
+
+const genScss = ( path ) => ( {
+  rule: {
+    test: /(\.scss|\.sass)$/,
+    use : [
+      MiniCssExtractPlugin.loader,
+      "css-loader",
+      "sass-loader",
+    ],
+  },
+  minimizer: new OptimizeCSSAssetsPlugin( {} ),
+  plugin   : new MiniCssExtractPlugin( { filename: path } ),
+} );
+
 exports.genScss = genScss;
 exports.genSass = genScss;
-
-exports.genPug = ( path ) => {
-  const plugin = new extractTextPlugin( path );
-  const loader = {
-    test  : /\.pug$/,
-    loader: plugin.extract( "raw-loader!pug-html-loader" ),
-  };
-  return { loader, plugin };
-};
-
-// Plugins
-exports.uglify = new webpack.optimize.UglifyJsPlugin( {
-  compress: { warnings: false },
-} );
 
 exports.browserSync = ( proxy = 8000, port = 8080 ) =>
   new browserSyncPlugin( {

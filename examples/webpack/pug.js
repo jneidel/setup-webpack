@@ -1,18 +1,19 @@
 const path = require( "path" );
-const { genPug } = require( "../../index" );
+const { pug } = require( "../.." );
 
 // Run: $ npm run pug
 
-const pug = genPug( "../index.html" );
-
 module.exports = {
+  mode  : "development",
   entry : "./examples/src/bundles/pug.bundle.js",
   output: {
     path    : path.resolve( __dirname, "../build/js" ),
     filename: "app.js",
   },
   module: {
-    loaders: [ pug.loader ],
+    rules: [ pug( "../html/index.html" ) ],
   },
-  plugins: [ pug.plugin ],
+  optimization: {
+    minimize: true,
+  },
 };

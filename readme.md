@@ -91,11 +91,15 @@ Before starting, let's make sure we know what a basic webpack config looks like:
 
 ```js
 module.exports = {
+  mode : "development",
   entry: "./src/index.js", // Entry file that will be loaded into webpack,
   output: {                // will be a bundle in our case
     path: path.resolve( __dirname, "build" ) // Specifies the output path for all files
     filename: "app.js", // Name of the main file to be exported
-  }
+  },
+  optimization: { // Production optimizations
+    minimize: true,
+  },
 };
 ```
 
@@ -129,9 +133,14 @@ module.exports = {
   output: { path: outputPath, filename: "app.js", },
   // Will create an empty 'build/app.js' file, as no javascript is required in 'bundle.js'
   module: { // Transpiling happens here
-    loaders: [ scss.loader ],
+    rules: [ scss.rule ],
   },
-  plugins: [ scss.plugin ],
+  plugins: [
+    scss.plugin,
+  ],
+  optimization: { // If mode set to 'production'
+    minimizer: [ scss.minimizer ],
+  },
 }
 ```
 
@@ -140,8 +149,6 @@ module.exports = {
 Transform [pug](https://github.com/pugjs/pug) to html.
 
 Working example at [`examples/webpack/pug.js`](https://github.com/jneidel/setup-webpack/blob/master/examples/webpack/pug.js).
-
-Same syntax from scss applies.
 
 **bundle.js:**
 
@@ -152,17 +159,14 @@ require( "./src/app.pug" );
 **webpack.config.js:**
 
 ```js
-const { genPug } = require( "setup-webpack" );
-
-const pug = genPug( "index.html" );
+const { pug } = require( "setup-webpack" );
 
 module.exports = {
   entry : "./bundle.js",
   output: { path: outputPath, filename: "app.js" },
   module: {
-    loaders: [ pug.loader ],
+    rules: [ pug( "../html/index.html" ) ],
   },
-  plugins: [ pug.plugin ],
 };
 ```
 
@@ -340,7 +344,7 @@ const { genScss, babel, uglify } = require( "setup-webpack" );
 - `uglify`
 - `polyfill( path )`
 - `genScss( path ) => { loader, plugin }`
-- `genPug( path ) => { loader, plugin }`
+- `pug( path )`
 - `browserSync( [proxy], [port] )`
 
 ### babel
@@ -397,7 +401,7 @@ module.exports = {
 }
 ```
 
-#### path
+**path:**
 
 Type: `string`
 
@@ -411,79 +415,61 @@ require( "./app.js" );
 
 Uses [babel-polyfill](https://www.npmjs.com/package/babel-polyfill) under the hood.
 
-### genScss( path ) => { loader, plugin }
+### genScss( path ) => { rule, plugin, minimizer }
 
-Type: `function`, `generator`
+<table><tr>
+  <td>Type: <code>function</code>, <code>generator</code></td>
+  <td>Param: <code>path</code></td>
+  <td>Return: <code>{ rule, plugin, minimizer }</code></td>
+</tr></table>
 
-Generates scss loader and plugin for the given output path.
-
-#### path
-
-Type: `string`
-
-Output path for the transpiled css file. Path is relative to `output.path`.
-
-#### => { loader, plugin }
-
-Type: `object`
-
-Extract scss from the javascript entry file and compile it to css.
+Generates a scss rule, plugin and minimizer for the given output path.
 
 ```js
-const { genScss } = require( "setup-webpack" );
-
-const scss = genScss( "app.css" ); // build/app.css
+const scss = genScss( "app.css" ); 
 
 module.exports = {
   output: {
     path: path.resolve( __dirname, "build" ),
   },
   module: {
-    loaders: [ scss.loader ]
+    rules: [ scss.rule ],
   },
-  plugins [ scss.plugin ]
+  plugins: [ scss.plugin ],
+  optimization: {
+    minimizer: [ scss.minimizer ],
+  },
 }
+
+//=> Saved as build/app.css
 ```
 
-Uses [extract-text-webpack-plugin](https://www.npmjs.com/package/extract-text-webpack-plugin), [raw-loader](https://www.npmjs.com/package/raw-loader), [sass-loader](https://www.npmjs.com/package/sass-loader), [node-sass](https://www.npmjs.com/package/node-sass) under the hood.
+Uses [node-sass](https://www.npmjs.com/package/node-sass), [mini-css-extract-plugin](https://www.npmjs.com/package/mini-css-extract-plugin), [sass-loader](https://www.npmjs.com/package/sass-loader), [css-loader](https://www.npmjs.com/package/), [optimize-css-assets-webpack-plugin](https://www.npmjs.com/package/) under the hood.
 
-### genPug( path ) => { loader, plugin }
+### pug( path )
 
-Type: `function`, `generator`
+<table><tr>
+  <td>Type: <code>function</code></td>
+  <td>Param: <code>path</code></td>
+  <td>Return: <code>rule</code></td>
+</tr></table>
 
-Generates pug loader and plugin for the given output path.
-
-Functions exactly the same as `genScss`.
-
-#### path
-
-Type: `string`
-
-Output path for the transpiled html file. Path is relative to `output.path`.
-
-#### => { loader, plugin }
-
-Type: `object`
-
-Extract pug from the javascript entry file and compile it to html.
+Transpiles `require`d pug code into html and writes the file to the given path.
 
 ```js
-const { genPug } = require( "setup-webpack" );
-
-const pug = genScss( "app.html" ); // build/app.html
-
 module.exports = {
   output: {
     path: path.resolve( __dirname, "build" ),
   },
   module: {
-    loaders: [ pug.loader ]
+    rules: [ pug( "./index.html" ) ],
   },
-  plugins [ pug.plugin ]
 }
+
+//=> Saved as build/index.html
 ```
 
-Uses [extract-text-webpack-plugin](https://www.npmjs.com/package/extract-text-webpack-plugin), [pug](https://www.npmjs.com/package/pug), [pug-html-loader](https://www.npmjs.com/package/pug-html-loader) under the hood.
+Uses [pug-html-loader](https://www.npmjs.com/package/pug-html-loader), [html-loader](https://www.npmjs.com/package/html-loader), [extract-loader](https://www.npmjs.com/package/extract-loader), [file-loader](https://www.npmjs.com/package/) under the hood.
 
 ### browserSync( [proxy], [port] )
 
