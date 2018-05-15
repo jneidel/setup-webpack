@@ -1,49 +1,90 @@
 # setup-webpack
 
-> Opinionated module of webpack plugins and loaders for simple setup with explanations of common use cases
+> Opinionated module of webpack plugins and rules for simple setup with explanations of common use cases
 
-[![](https://img.shields.io/badge/license-MIT-green.svg)](https://github.com/jneidel/setup-webpack/blob/master/licence)
-[![](https://img.shields.io/npm/dw/setup-webpack.svg)](https://www.npmjs.com/package/setup-webpack)
+[![](https://img.shields.io/npm/dw/setup-webpack.svg?style=flat-square)](https://www.npmjs.com/package/setup-webpack)
+[![](https://img.shields.io/badge/license-MIT-green.svg?style=flat-square)](https://github.com/jneidel/setup-webpack/blob/master/licence)
 
 Reduce boilerplate when creating your webpack config and keep your package.json slim.
 
 Includes abstractions for transforming scss and pug, transpiling and polyfilling your javascript, minfication and reloading the browser on changes. All usage patterns are described with clear examples.
 
-- [Install](https://github.com/jneidel/setup-webpack#install)
-- [Usage](https://github.com/jneidel/setup-webpack#usage)
-- [Usage Patterns](https://github.com/jneidel/setup-webpack#usage-patterns)
-- [API](https://github.com/jneidel/setup-webpack#api)
+<details>
+<summary><strong>Table of Contents</strong></summary>
+
+<!-- toc -->
+
+- [Install](#install)
+  * [Webpack 3](#webpack-3)
+- [Usage](#usage)
+- [Usage Patterns](#usage-patterns)
+  * [Get up to speed with webpack](#get-up-to-speed-with-webpack)
+  * [Transform scss into css](#transform-scss-into-css)
+  * [Transform pug into html](#transform-pug-into-html)
+  * [Minify and transpile ES6+](#minify-and-transpile-es6)
+  * [Differentiate between development and production env](#differentiate-between-development-and-production-env)
+  * [Reload browser on changes](#reload-browser-on-changes)
+  * [Generating more than one output file](#generating-more-than-one-output-file)
+- [API](#api)
+  * [babel](#babel)
+  * [polyfill( path )](#polyfill-path-)
+  * [genScss( path )](#genscss-path-)
+  * [pug( path )](#pug-path-)
+  * [browserSync( [proxy], [port] )](#browsersync-proxy-port-)
+- [License](#license)
+
+<!-- tocstop -->
+
+</details>
 
 ## Install
 
-[![](https://img.shields.io/npm/v/setup-webpack.svg)](https://www.npmjs.com/package/setup-webpack)
+**Webpack 4:**
+
+
+[![](https://img.shields.io/npm/v/setup-webpack.svg?style=flat-square)](https://www.npmjs.com/package/setup-webpack)
 
 ```
 $ npm install setup-webpack
 ```
+
+**Webpack 3:**
+
+
+[![](https://img.shields.io/badge/npm-1.2.1-blue.svg?style=flat-square)](https://www.npmjs.com/package/setup-webpack/v/1.2.1)
+
+```
+$ npm install setup-webpack@1
+```
+
+The documentation for `v1.2.1` can be found [here](https://github.com/jneidel/setup-webpack/tree/822e8d2c383121814f9c5b24634a05a41941596f).
 
 ## Usage
 
 **webpack.config.js:**
 
 ```js
-const { babel, polyfill, uglify, browserSync, genScss, genPug } = require( "setup-webpack" );
+const { babel, polyfill, browserSync, pug, genScss } = require( "setup-webpack" );
 
 const sync = browserSync( 8000, 8080 );
 
 const scss = genScss( "app.css" );
-const pug = genPug( "app.html" );
 
 module.exports = {
+  mode  : "development",
   entry : polyfill( "./app.bundle.js" ),
   output: {
     path    : path.resolve( __dirname, "build" ),
     filename: "app.js",
   },
   module: {
-    loaders: [ babel, scss.loader, pug.loader ],
+    rules: [ babel, pug( "app.html" ), scss.rule ],
   },
-  plugins: [ uglify, scss.plugin, pug.plugin, sync ],
+  plugins: [ uglify, scss.plugin, sync ],
+  optimization: {
+    minimize: true,
+    minimizer: [ scss.minimizer ],
+  },
 };
 ```
 
@@ -138,7 +179,7 @@ module.exports = {
   plugins: [
     scss.plugin,
   ],
-  optimization: { // If mode set to 'production'
+  optimization: { // If mode set to 'production' use scss minimizer
     minimizer: [ scss.minimizer ],
   },
 }
@@ -337,65 +378,42 @@ If no files of a specific type `js|scss|pug` are `require`d in, webpack will sim
 Cherry-pick the parts that you need using object destructuring:
 
 ```js
-const { genScss, babel, uglify } = require( "setup-webpack" );
+const { babel, pug, genScss } = require( "setup-webpack" );
 ```
-
-- `babel`
-- `uglify`
-- `polyfill( path )`
-- `genScss( path ) => { loader, plugin }`
-- `pug( path )`
-- `browserSync( [proxy], [port] )`
 
 ### babel
 
-Type: `object`
-
-Unit: `loader`
+<table><tr>
+  <td>Type: <code>object</code></td>
+  <td>Param: <code>path</code></td>
+  <td>Return: <code>rule</code></td>
+</tr></table>
 
 This loader transpiles ES6+ javascript for older browsers ([more on babel](https://babeljs.io/)) and minifies contents (shrinks down files, removing whitespace, redundant characters, [more on minify](https://babeljs.io/blog/2016/08/30/babili)).
 
 Uses the [env](https://babeljs.io/docs/plugins/preset-env/) preset as well the [minifier](https://github.com/babel/minify) as options.
 
 ```js
-const { babel } = require( "setup-webpack" );
-
 module.exports = {
   module: {
-    loaders: [ babel ]
+    rules: [ babel ]
   }
 }
 ```
 
 Uses [babel-loader](https://www.npmjs.com/package/babel-loader), [babel-preset-env](https://www.npmjs.com/package/babel-preset-env), [babel-minify-webpack-plugin](https://www.npmjs.com/package/babel-minify-webpack-plugin), [babel-core](https://www.npmjs.com/package/babel-core) under the hood.
 
-### uglify
-
-Type: `object`
-
-Unit: `plugin`
-
-Compresses, minifies files, [more](https://github.com/mishoo/UglifyJS2).
-
-```js
-const { uglify } = require( "setup-webpack" );
-
-module.exports = {
-  plugins: [ uglify ]
-}
-```
-
-Uses [webpack](https://www.npmjs.com/package/webpack).optimize.UglifyJsPlugin under the hood.
-
 ### polyfill( path )
 
-Type: `function`
+<table><tr>
+  <td>Type: <code>function</code></td>
+  <td>Param: <code>path</code></td>
+  <td>Return: <code>entry</code></td>
+</tr></table>
 
 Polyfills functions and methods not yet available in all browsers. For more information see [polyfill](https://babeljs.io/docs/usage/polyfill/).
 
 ```js
-const { polyfill } = require( "setup-webpack" );
-
 module.exports = {
   entry: polyfill( "./bundle.js" )
 }
@@ -403,19 +421,11 @@ module.exports = {
 
 **path:**
 
-Type: `string`
-
 Path to entry point bundle, which requires the code to be build.
-
-**bundle.js:**
-
-```js
-require( "./app.js" );
-```
 
 Uses [babel-polyfill](https://www.npmjs.com/package/babel-polyfill) under the hood.
 
-### genScss( path ) => { rule, plugin, minimizer }
+### genScss( path )
 
 <table><tr>
   <td>Type: <code>function</code>, <code>generator</code></td>
@@ -423,7 +433,9 @@ Uses [babel-polyfill](https://www.npmjs.com/package/babel-polyfill) under the ho
   <td>Return: <code>{ rule, plugin, minimizer }</code></td>
 </tr></table>
 
-Generates a scss rule, plugin and minimizer for the given output path.
+Transpiles scss code in the entry file into css and writes the file to the given path.
+
+Function generates a webpack rule, plugin and minimizer:
 
 ```js
 const scss = genScss( "app.css" ); 
@@ -454,7 +466,7 @@ Uses [node-sass](https://www.npmjs.com/package/node-sass), [mini-css-extract-plu
   <td>Return: <code>rule</code></td>
 </tr></table>
 
-Transpiles `require`d pug code into html and writes the file to the given path.
+Transpiles pug code in the entry file into html and writes the file to the given path.
 
 ```js
 module.exports = {
@@ -473,15 +485,17 @@ Uses [pug-html-loader](https://www.npmjs.com/package/pug-html-loader), [html-loa
 
 ### browserSync( [proxy], [port] )
 
-Type: `function`
-
-Unit: `plugin`
+<table><tr>
+  <td>Type: <code>function</code></td>
+  <td>Param: <code>[proxy], [port]</code></td>
+  <td>Return: <code>plugin</code></td>
+</tr></table>
 
 Reloads brower windows connected on a given port, after webpack has rebuilt.
 
 The proxy as well as the port are using localhost.
 
-#### [proxy]
+**proxy:**
 
 Optional
 
@@ -491,7 +505,7 @@ Default: `8000`
 
 Describes the port your app is running on.
 
-#### [port]
+**port:**
 
 Optional
 
