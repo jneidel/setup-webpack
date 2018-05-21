@@ -14,7 +14,7 @@ exports.babel = {
   },
 };
 
-exports.pug = ( path ) => ( {
+exports.pug = path => ( {
   test: /\.pug/,
   use : [
     `file-loader?name=${path}`,
@@ -24,7 +24,16 @@ exports.pug = ( path ) => ( {
   ],
 } );
 
-const genScss = ( path ) => ( {
+exports.md = path => ( {
+  test: /\.md$/,
+  use : [
+    `file-loader?name=${path}`,
+    "extract-loader",
+    "html-loader",
+    "markdown-loader",
+  ] } );
+
+const genScss = path => ( {
   rule: {
     test: /(\.scss|\.sass)$/,
     use : [
