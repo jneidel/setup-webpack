@@ -24,10 +24,11 @@ exports.pug = path => ( {
   ],
 } );
 
-exports.md = path => ( {
+exports.md = ( path, href = "" ) => ( {
   test: /\.md$/,
   use : [
     `file-loader?name=${path}`,
+    `gfm-loader?href=${href}`,
     "extract-loader",
     "html-loader",
     "markdown-loader",
