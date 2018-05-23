@@ -24,11 +24,13 @@ Includes abstractions for transforming scss and pug, transpiling and polyfilling
   * [Reload browser on file changes](#reload-browser-on-file-changes)
   * [Differentiate between development and production env](#differentiate-between-development-and-production-env)
   * [Generating more than one output file](#generating-more-than-one-output-file)
+  * [Transform markdown into html](#transform-markdown-into-html)
 - [API](#api)
   * [babel](#babel)
   * [polyfill( path )](#polyfill-path-)
   * [genScss( path )](#genscss-path-)
   * [pug( path )](#pug-path-)
+  * [md( path, [href] )](#md-path-href-)
   * [browserSync( [proxy], [port] )](#browsersync-proxy-port-)
 - [License](#license)
 
@@ -287,6 +289,12 @@ Transform [pug](https://github.com/pugjs/pug) to html.
 
 View example at [`examples/webpack/pug.js`](examples/webpack/pug.js).
 
+### Transform markdown into html
+
+Transform markdown to html, applying gfm styles.
+
+View example at [`examples/webpack/md.js`](examples/webpack/md.js).
+
 ### Minify and transpile ES6 JavaScript
 
 Reduce file size minify your code and, for compatability with older browsers, polyfill and transpile ES6+ using babel.
@@ -320,7 +328,6 @@ Running this command in your terminal will require you to install the webpack-cl
 Minification and transpiling will only be triggerd by enviroment variables that indicate a production evironment.
 
 View working example at [`examples/webpack/env.js`](examples/webpack/env.js).
-
 
 ### Generating more than one output file
 
@@ -439,6 +446,41 @@ module.exports = {
 ```
 
 Uses [pug-html-loader](https://www.npmjs.com/package/pug-html-loader), [html-loader](https://www.npmjs.com/package/html-loader), [extract-loader](https://www.npmjs.com/package/extract-loader), [file-loader](https://www.npmjs.com/package/) under the hood.
+
+### md( path, [href] )
+
+<table><tr>
+  <td>Type: <code>function</code></td>
+  <td>Param: <code>path</code>, <code>href</code></td>
+  <td>Return: <code>rule</code></td>
+</tr></table>
+
+Transpile `require`d markdown files into html. GFM (github flavored markdown) styles are applied.
+
+```js
+module.exports = {
+  output: {
+    path: path.resolve( __dirname, "build" ),
+  },
+  module: {
+    rules: [ md( "./docs.html" ) ],
+  },
+}
+
+//=> Saved as build/docs.html
+```
+
+**href:**
+
+Default: [sindresorhus/github-markdown-css](https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/2.10.0/github-markdown.min.css)
+
+Pass the `href` value that will be set as stylesheet source for applying the gfm styles. Could eg. be used to use a local version of the styles.
+
+```js
+md( "./docs.html", "./gfm.css" )
+```
+
+Uses [markdown-loader](https://www.npmjs.com/package/markdown-loader), [html-loader](https://www.npmjs.com/package/html-loader), [extract-loader](https://www.npmjs.com/package/extract-loader), [gfm-loader](https://www.npmjs.com/package/gfm-loader), [file-loader](https://www.npmjs.com/package/) under the hood.
 
 ### browserSync( [proxy], [port] )
 
