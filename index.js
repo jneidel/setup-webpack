@@ -15,7 +15,7 @@ exports.babel = {
 };
 
 exports.pug = path => ( {
-  test: /\.pug/,
+  test: /\.pug$/,
   use : [
     `file-loader?name=${path}`,
     "extract-loader",
@@ -36,7 +36,7 @@ exports.md = ( path, href = "" ) => ( {
 
 const genScss = path => ( {
   rule: {
-    test: /(\.scss|\.sass)$/,
+    test: /\.(scss|sass)$/,
     use : [
       MiniCssExtractPlugin.loader,
       "css-loader",
@@ -45,6 +45,13 @@ const genScss = path => ( {
   },
   minimizer: new OptimizeCSSAssetsPlugin( {} ),
   plugin   : new MiniCssExtractPlugin( { filename: path } ),
+  font     : {
+    test   : /\.(ttf|otf)$/,
+    loader : "file-loader",
+    options: {
+      name: `${pathModule.dirname( path )}/[name].[ext]`,
+    },
+  },
 } );
 
 exports.genScss = genScss;

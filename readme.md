@@ -283,6 +283,8 @@ Transform [scss](https://sass-lang.com/) or (sass) files to css.
 
 View commented example at [`examples/webpack/scss.js`](examples/webpack/scss.js).
 
+If you import fonts in your sass also take a look at [`examples/webpack/font.js`](examples/webpack/font.js).
+
 ### Transform pug into html
 
 Transform [pug](https://github.com/pugjs/pug) to html.
@@ -394,7 +396,7 @@ Uses [babel-polyfill](https://www.npmjs.com/package/babel-polyfill) under the ho
 <table><tr>
   <td>Type: <code>function</code>, <code>generator</code></td>
   <td>Param: <code>path</code></td>
-  <td>Return: <code>{ rule, plugin, minimizer }</code></td>
+  <td>Return: <code>{ rule, plugin, minimizer, font }</code></td>
 </tr></table>
 
 Transpiles scss code in the entry file into css and writes the file to the given path.
@@ -420,7 +422,19 @@ module.exports = {
 //=> Saved as build/app.css
 ```
 
-Uses [node-sass](https://www.npmjs.com/package/node-sass), [mini-css-extract-plugin](https://www.npmjs.com/package/mini-css-extract-plugin), [sass-loader](https://www.npmjs.com/package/sass-loader), [css-loader](https://www.npmjs.com/package/), [optimize-css-assets-webpack-plugin](https://www.npmjs.com/package/) under the hood.
+**font:**
+
+`genScss` also generates includes `scss.font`, which is a rule that sould be included if you're importing local font files within your sass.
+
+```js
+{
+  module: {
+    rules: [ scss.rule, scss.font ]
+  }
+}
+```
+
+Uses [node-sass](https://www.npmjs.com/package/node-sass), [mini-css-extract-plugin](https://www.npmjs.com/package/mini-css-extract-plugin), [sass-loader](https://www.npmjs.com/package/sass-loader), [css-loader](https://www.npmjs.com/package/), [optimize-css-assets-webpack-plugin](https://www.npmjs.com/package/), [file-loader](https://www.npmjs.com/package/file-loader) under the hood.
 
 ### pug( path )
 

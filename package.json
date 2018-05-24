@@ -14,6 +14,7 @@
     "pug": "webpack --config examples/webpack/pug.js",
     "md": "webpack --config examples/webpack/md.js",
     "prod": "webpack --config examples/webpack/prod.js",
+    "font": "webpack --config examples/webpack/font.js",
     "server": "node examples/server/server.js",
     "sync": "concurrently \"npm run server\" \"webpack -w --config examples/webpack/sync.js\" --names \"💻 ,📦 \" --prefix name",
     "env": "concurrently \"npm run server\" \"webpack -w --config examples/webpack/env.js\" --names \"💻 ,📦 \" --prefix name",
