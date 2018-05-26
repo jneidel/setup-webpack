@@ -356,6 +356,7 @@ const { babel, pug, genScss } = require( "setup-webpack" );
   <td>Type: <code>object</code></td>
   <td>Param: <code>path</code></td>
   <td>Return: <code>rule</code></td>
+  <td>Exampes: <a href="examples/webpack/prod.js"><code>prod</code></a>, <a href="examples/webpack/env.js"><code>env</code></a>, <a href="examples/webpack/complete.js"><code>complete</code></a></td>
 </tr></table>
 
 This loader transpiles ES6+ javascript for older browsers ([more on babel](https://babeljs.io/)) and minifies contents (shrinks down files, removing whitespace, redundant characters, [more on minify](https://babeljs.io/blog/2016/08/30/babili)).
@@ -378,6 +379,7 @@ Uses [babel-loader](https://www.npmjs.com/package/babel-loader), [babel-preset-e
   <td>Type: <code>function</code></td>
   <td>Param: <code>path</code></td>
   <td>Return: <code>entry</code></td>
+  <td>Exampes: <a href="examples/webpack/prod.js"><code>prod</code></a>, <a href="examples/webpack/complete.js"><code>complete</code></a></td>
 </tr></table>
 
 Polyfills functions and methods not yet available in all browsers. For more information see [polyfill](https://babeljs.io/docs/usage/polyfill/).
@@ -397,9 +399,10 @@ Uses [babel-polyfill](https://www.npmjs.com/package/babel-polyfill) under the ho
 ### genScss( path )
 
 <table><tr>
-  <td>Type: <code>function</code>, <code>generator</code></td>
-  <td>Param: <code>path</code></td>
-  <td>Return: <code>{ rule, plugin, minimizer, font }</code></td>
+  <td>Type: <br><code>function</code>, <code>generator</code></td>
+  <td>Param: <br><code>path</code></td>
+  <td>Return: <br><code>{ rule, plugin, minimizer, font }</code></td>
+  <td>Exampes: <br><a href="examples/webpack/scss.js"><code>scss</code></a>, <a href="examples/webpack/env.js"><code>env</code></a>, <a href="examples/webpack/complete.js"><code>complete</code></a>, <a href="examples/webpack/font.js"><code>font</code></a></td>
 </tr></table>
 
 Transpiles scss code in the entry file into css and writes the file to the given path.
@@ -445,6 +448,7 @@ Uses [node-sass](https://www.npmjs.com/package/node-sass), [mini-css-extract-plu
   <td>Type: <code>function</code></td>
   <td>Param: <code>path</code></td>
   <td>Return: <code>rule</code></td>
+  <td>Exampes: <a href="examples/webpack/pug.js"><code>pug</code></a>, <a href="examples/webpack/complete.js"><code>complete</code></a></td>
 </tr></table>
 
 Transpiles pug code in the entry file into html and writes the file to the given path.
@@ -468,6 +472,7 @@ module.exports = {
   <td>Type: <code>function</code></td>
   <td>Param: <code>path</code></td>
   <td>Return: <code>{ rule, img }</code></td>
+  <td>Exampes: <a href="examples/webpack/img.js"><code>img</code></a></td>
 </tr></table>
 
 This version should only be used if you need to import local images.
@@ -499,6 +504,7 @@ Uses [pug-html-loader](https://www.npmjs.com/package/pug-html-loader), [html-loa
   <td>Type: <code>function</code></td>
   <td>Param: <code>path</code>, <code>href</code></td>
   <td>Return: <code>rule</code></td>
+  <td>Exampes: <a href="examples/webpack/md.js"><code>md</code></a></td>
 </tr></table>
 
 Transpile `require`d markdown files into html. GFM (github flavored markdown) styles are applied.
@@ -534,6 +540,7 @@ Uses [markdown-loader](https://www.npmjs.com/package/markdown-loader), [html-loa
   <td>Type: <code>function</code></td>
   <td>Param: <code>[proxy], [port]</code></td>
   <td>Return: <code>plugin</code></td>
+  <td>Exampes: <a href="examples/webpack/sync.js"><code>sync</code></a>, <a href="examples/webpack/env.js"><code>env</code></a>, <a href="examples/webpack/complete.js"><code>complete</code></a></td>
 </tr></table>
 
 Reloads brower windows connected on a given port, after webpack has rebuilt.
