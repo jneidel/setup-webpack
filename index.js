@@ -14,16 +14,6 @@ exports.babel = {
   },
 };
 
-exports.pug = path => ( {
-  test: /\.pug$/,
-  use : [
-    `file-loader?name=${path}`,
-    "extract-loader",
-    "html-loader",
-    "pug-html-loader",
-  ],
-} );
-
 exports.md = ( path, href = "" ) => ( {
   test: /\.md$/,
   use : [
@@ -53,9 +43,37 @@ const genScss = path => ( {
     },
   },
 } );
-
 exports.genScss = genScss;
 exports.genSass = genScss;
+
+exports.pug = path => ( {
+  test: /\.pug$/,
+  use : [
+    `file-loader?name=${path}`,
+    "extract-loader",
+    "html-loader",
+    "pug-html-loader",
+  ],
+} );
+
+exports.genPug = path => ( {
+  rule: { // Same as pug
+    test: /\.pug$/,
+    use : [
+      `file-loader?name=${path}`,
+      "extract-loader",
+      "html-loader",
+      "pug-html-loader",
+    ],
+  },
+  img: {
+    test   : /\.(png|jpg|jpeg|ico)$/,
+    loader : "file-loader",
+    options: {
+      name: `${pathModule.dirname( path )}/[name].[ext]`,
+    },
+  },
+} );
 
 // Plugins
 exports.browserSync = ( proxy = 8000, port = 8080 ) =>

@@ -20,16 +20,17 @@ Includes abstractions for transforming scss and pug, transpiling and polyfilling
   * [Get up to speed with webpack](#get-up-to-speed-with-webpack)
   * [Transform scss into css](#transform-scss-into-css)
   * [Transform pug into html](#transform-pug-into-html)
+  * [Transform markdown into html](#transform-markdown-into-html)
   * [Minify and transpile ES6 JavaScript](#minify-and-transpile-es6-javascript)
   * [Reload browser on file changes](#reload-browser-on-file-changes)
   * [Differentiate between development and production env](#differentiate-between-development-and-production-env)
   * [Generating more than one output file](#generating-more-than-one-output-file)
-  * [Transform markdown into html](#transform-markdown-into-html)
 - [API](#api)
   * [babel](#babel)
   * [polyfill( path )](#polyfill-path-)
   * [genScss( path )](#genscss-path-)
   * [pug( path )](#pug-path-)
+    + [genPug( path )](#genpug-path-)
   * [md( path, [href] )](#md-path-href-)
   * [browserSync( [proxy], [port] )](#browsersync-proxy-port-)
 - [License](#license)
@@ -283,13 +284,15 @@ Transform [scss](https://sass-lang.com/) or (sass) files to css.
 
 View commented example at [`examples/webpack/scss.js`](examples/webpack/scss.js).
 
-If you import fonts in your sass also take a look at [`examples/webpack/font.js`](examples/webpack/font.js).
+If you import local fonts in your sass also take a look at [`examples/webpack/font.js`](examples/webpack/font.js).
 
 ### Transform pug into html
 
 Transform [pug](https://github.com/pugjs/pug) to html.
 
 View example at [`examples/webpack/pug.js`](examples/webpack/pug.js).
+
+If you import local images in your pug also take a look at [`examples/webpack/img.js`](examples/webpack/img.js).
 
 ### Transform markdown into html
 
@@ -458,6 +461,35 @@ module.exports = {
 
 //=> Saved as build/index.html
 ```
+
+#### genPug( path )
+
+<table><tr>
+  <td>Type: <code>function</code></td>
+  <td>Param: <code>path</code></td>
+  <td>Return: <code>{ rule, img }</code></td>
+</tr></table>
+
+This version should only be used if you need to import local images.
+
+The returned `rule` works the same as `pug( path )`.
+
+```js
+const pug = genPug( "./index.html" );
+
+module.exports = {
+  output: {
+    path: path.resolve( __dirname, "build" ),
+  },
+  module: {
+    rules: [ pug.rule, pug.img ],
+  },
+}
+
+//=> Saved as build/index.html
+```
+
+Any images imported in the entry file will be copyied over to the build location along with the transpiled html file.
 
 Uses [pug-html-loader](https://www.npmjs.com/package/pug-html-loader), [html-loader](https://www.npmjs.com/package/html-loader), [extract-loader](https://www.npmjs.com/package/extract-loader), [file-loader](https://www.npmjs.com/package/) under the hood.
 
