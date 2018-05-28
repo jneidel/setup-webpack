@@ -3,7 +3,7 @@ const browserSyncPlugin = require( "browser-sync-webpack-plugin" );
 const MiniCssExtractPlugin = require( "mini-css-extract-plugin" );
 const OptimizeCSSAssetsPlugin = require( "optimize-css-assets-webpack-plugin" );
 
-// Rules (Loaders)
+/* Rules (Loaders) */
 exports.babel = {
   test: /\.js$/,
   use : {
@@ -24,17 +24,20 @@ exports.md = ( path, href = "" ) => ( {
     "markdown-loader",
   ] } );
 
+// Scss
+const scssLoader = {
+  test: /\.(scss|sass)$/,
+  use : [
+    MiniCssExtractPlugin.loader,
+    "css-loader",
+    "sass-loader",
+  ],
+};
+
 const genScss = path => ( {
-  rule: {
-    test: /\.(scss|sass)$/,
-    use : [
-      MiniCssExtractPlugin.loader,
-      "css-loader",
-      "sass-loader",
-    ],
-  },
   minimizer: new OptimizeCSSAssetsPlugin( {} ),
   plugin   : new MiniCssExtractPlugin( { filename: path } ),
+  rule     : scssLoader,
   font     : {
     test   : /\.(ttf|otf)$/,
     loader : "file-loader",
@@ -42,10 +45,23 @@ const genScss = path => ( {
       name: `${pathModule.dirname( path )}/[name].[ext]`,
     },
   },
+  img: {
+    test   : /\.(png|jpg|jpeg|ico)$/,
+    loader : "file-loader",
+    options: {
+      name: `${pathModule.dirname( path )}/[name].[ext]`,
+    },
+  },
+  rules: [
+    scssLoader,
+    { test: /\.(ttf|otf)$/, loader: "file-loader", options: { name: `${pathModule.dirname( path )}/[name].[ext]` } },
+    { test: /\.(png|jpg|jpeg|ico)$/, loader: "file-loader", options: { name: `${pathModule.dirname( path )}/[name].[ext]` } },
+  ],
 } );
 exports.genScss = genScss;
 exports.genSass = genScss;
 
+// Pug
 exports.pug = path => ( {
   test: /\.pug$/,
   use : [
@@ -73,9 +89,13 @@ exports.genPug = path => ( {
       name: `${pathModule.dirname( path )}/[name].[ext]`,
     },
   },
+  rules: [
+    { test: /\.pug$/, use: [ `file-loader?name=${path}`, "extract-loader", "html-loader", "pug-html-loader" ] },
+    { test: /\.(png|jpg|jpeg|ico)$/, loader: "file-loader", options: { name: `${pathModule.dirname( path )}/[name].[ext]` } },
+  ],
 } );
 
-// Plugins
+/* Plugins */
 exports.browserSync = ( proxy = 8000, port = 8080 ) =>
   new browserSyncPlugin( {
     host : "localhost",
@@ -83,5 +103,5 @@ exports.browserSync = ( proxy = 8000, port = 8080 ) =>
     proxy: `http://localhost:${proxy}/`,
   }, {} );
 
-// Functions
+/* Functions */
 exports.polyfill = path => [ "babel-polyfill", path ];
