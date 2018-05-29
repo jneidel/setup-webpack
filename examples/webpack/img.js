@@ -1,16 +1,14 @@
 const path = require( "path" );
-const { genPug } = require( "../.." );
+const { img, pug, genScss } = require( "../.." );
 
 // Run: $ npm run font
 
 /**
- * The entrypoint file requires a .pug file which imports a local img file
- * See: ../src/pug/img.scss
+ * The entrypoint file requires .pug/.scss files which import local imgs
+ * See: ../src/scss/img.scss & ../src/pug/img.pug
  */
 
-const pug = genPug( "../html/img.html" );
-// Outputs images to same dir (../html/), copying over the name,
-// in this case github.png
+const scss = genScss( "../css/img.css" );
 
 module.exports = {
   mode  : "development",
@@ -20,6 +18,12 @@ module.exports = {
     filename: "img.js", // Empty img.js file
   },
   module: {
-    rules: [ pug.rule, pug.img ],
+    rules: [
+      scss.rule,
+      pug( "../html/img.html" ),
+      img( "../img" ), // Only give the directory, not the file name,
+      // which will be copied over, i.e. github.png and canvas-orange.png
+    ],
   },
+  plugins: [ scss.plugin ],
 };

@@ -30,7 +30,7 @@ Includes abstractions for transforming scss and pug, transpiling and polyfilling
   * [polyfill( path )](#polyfill-path-)
   * [genScss( path )](#genscss-path-)
   * [pug( path )](#pug-path-)
-    + [genPug( path )](#genpug-path-)
+  * [img( directory )](#img-directory-)
   * [md( path, [href] )](#md-path-href-)
   * [browserSync( [proxy], [port] )](#browsersync-proxy-port-)
 - [License](#license)
@@ -184,21 +184,21 @@ const scss = genPug( "styles.css" );
 **webpack.config.js:**
 
 ```js
-const { babel, polyfill, browserSync, pug, genScss } = require( "setup-webpack" );
+const { babel, polyfill, browserSync, pug, genScss, img } = require( "setup-webpack" );
 
 const sync = browserSync( 8000, 8080 );
 
 const scss = genScss( "app.css" );
 
 module.exports = {
-  mode  : "development",
+  mode  : "production",
   entry : polyfill( "./app.bundle.js" ),
   output: {
     path    : path.resolve( __dirname, "build" ),
     filename: "app.js",
   },
   module: {
-    rules: [ babel, pug( "app.html" ), scss.rule ],
+    rules: [ babel, pug( "app.html" ), scss.rule, scss.font, img( "img/" ) ],
   },
   plugins: [ scss.plugin, sync ],
   optimization: {
@@ -218,7 +218,9 @@ Clone the repo to run the examples:
 $ git clone https://github.com/jneidel/setup-webpack.git
 ```
 
-### Get up to speed with webpack
+<details>
+<summary><strong>Get up to speed with webpack</strong></summary>
+<br>
 
 The default config location is in the root of the project, in a file named `webpack.config.js`.
 
@@ -278,13 +280,15 @@ module.exports = {
 
 For a more in-depth intro, check out the [webpack docs](https://webpack.js.org/guides/getting-started/).
 
+</details>
+
 ### Transform scss into css
 
 Transform [scss](https://sass-lang.com/) or (sass) files to css.
 
 View commented example at [`examples/webpack/scss.js`](examples/webpack/scss.js).
 
-If you import local fonts in your sass also take a look at [`examples/webpack/font.js`](examples/webpack/font.js).
+To import [local fonts](#genscss-path-) and [local images](#img-directory-) check out the corresponding API docs.
 
 ### Transform pug into html
 
@@ -292,7 +296,7 @@ Transform [pug](https://github.com/pugjs/pug) to html.
 
 View example at [`examples/webpack/pug.js`](examples/webpack/pug.js).
 
-If you import local images in your pug also take a look at [`examples/webpack/img.js`](examples/webpack/img.js).
+To import [local images](#img-directory-) check out the corresponding API docs.
 
 ### Transform markdown into html
 
@@ -466,37 +470,35 @@ module.exports = {
 //=> Saved as build/index.html
 ```
 
-#### genPug( path )
+Uses [pug-html-loader](https://www.npmjs.com/package/pug-html-loader), [html-loader](https://www.npmjs.com/package/html-loader), [extract-loader](https://www.npmjs.com/package/extract-loader), [file-loader](https://www.npmjs.com/package/) under the hood.
+
+### img( directory )
 
 <table><tr>
   <td>Type: <code>function</code></td>
-  <td>Param: <code>path</code></td>
-  <td>Return: <code>{ rule, img }</code></td>
+  <td>Param: <code>directory</code></td>
+  <td>Return: <code>rule</code></td>
   <td>Exampes: <a href="examples/webpack/img.js"><code>img</code></a></td>
 </tr></table>
 
-This version should only be used if you need to import local images.
+This loader should only be used if you import local images in your pug or scss code.
 
-The returned `rule` works the same as `pug( path )`.
+Unlike the other loaders, this one only takes a directory, not a full path. The filename/extension will be copied over from the original, to not mix up different images.
 
 ```js
-const pug = genPug( "./index.html" );
-
 module.exports = {
   output: {
     path: path.resolve( __dirname, "build" ),
   },
   module: {
-    rules: [ pug.rule, pug.img ],
+    rules: [ img( "./img" ) ],
   },
 }
 
-//=> Saved as build/index.html
+//=> Saved as build/img/[name].[ext]
 ```
 
-Any images imported in the entry file will be copyied over to the build location along with the transpiled html file.
-
-Uses [pug-html-loader](https://www.npmjs.com/package/pug-html-loader), [html-loader](https://www.npmjs.com/package/html-loader), [extract-loader](https://www.npmjs.com/package/extract-loader), [file-loader](https://www.npmjs.com/package/) under the hood.
+Uses [file-loader](https://www.npmjs.com/package/) under the hood.
 
 ### md( path, [href] )
 

@@ -45,18 +45,6 @@ const genScss = path => ( {
       name: `${pathModule.dirname( path )}/[name].[ext]`,
     },
   },
-  img: {
-    test   : /\.(png|jpg|jpeg|ico)$/,
-    loader : "file-loader",
-    options: {
-      name: `${pathModule.dirname( path )}/[name].[ext]`,
-    },
-  },
-  rules: [
-    scssLoader,
-    { test: /\.(ttf|otf)$/, loader: "file-loader", options: { name: `${pathModule.dirname( path )}/[name].[ext]` } },
-    { test: /\.(png|jpg|jpeg|ico)$/, loader: "file-loader", options: { name: `${pathModule.dirname( path )}/[name].[ext]` } },
-  ],
 } );
 exports.genScss = genScss;
 exports.genSass = genScss;
@@ -72,27 +60,13 @@ exports.pug = path => ( {
   ],
 } );
 
-exports.genPug = path => ( {
-  rule: { // Same as pug
-    test: /\.pug$/,
-    use : [
-      `file-loader?name=${path}`,
-      "extract-loader",
-      "html-loader",
-      "pug-html-loader",
-    ],
+// Image loader
+exports.img = path => ( {
+  test   : /\.(png|jpg|jpeg|ico)$/,
+  loader : "file-loader",
+  options: {
+    name: `${path}/[name].[ext]`,
   },
-  img: {
-    test   : /\.(png|jpg|jpeg|ico)$/,
-    loader : "file-loader",
-    options: {
-      name: `${pathModule.dirname( path )}/[name].[ext]`,
-    },
-  },
-  rules: [
-    { test: /\.pug$/, use: [ `file-loader?name=${path}`, "extract-loader", "html-loader", "pug-html-loader" ] },
-    { test: /\.(png|jpg|jpeg|ico)$/, loader: "file-loader", options: { name: `${pathModule.dirname( path )}/[name].[ext]` } },
-  ],
 } );
 
 /* Plugins */
