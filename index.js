@@ -62,7 +62,7 @@ exports.pug = path => ( {
 
 // Image loader
 exports.img = path => ( {
-  test   : /\.(png|jpg|jpeg|ico)$/,
+  test   : /\.(png|jpg|jpeg|ico|svg)$/,
   loader : "file-loader",
   options: {
     name: `${path}/[name].[ext]`,
