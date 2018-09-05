@@ -31,7 +31,7 @@ Includes abstractions for transforming scss and pug, transpiling and polyfilling
   * [genScss( path )](#genscss-path-)
   * [pug( path )](#pug-path-)
   * [img( directory )](#img-directory-)
-  * [md( path, [href] )](#md-path-href-)
+  * [md( path, [gfm, style, border] )](#md-path-gfm-style-border-)
   * [browserSync( [proxy], [port] )](#browsersync-proxy-port-)
 - [License](#license)
 
