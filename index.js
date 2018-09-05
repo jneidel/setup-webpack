@@ -14,11 +14,11 @@ exports.babel = {
   },
 };
 
-exports.md = ( path, href = "" ) => ( {
+exports.md = ( path, gfm = null, style = null, border = null ) => ( {
   test: /\.md$/,
   use : [
     `file-loader?name=${path}`,
-    `gfm-loader?href=${href}`,
+    `gfm-loader?gfm=${gfm}&style=${style}&border=${border}`,
     "extract-loader",
     "html-loader",
     "markdown-loader",

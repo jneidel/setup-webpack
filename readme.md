@@ -500,11 +500,11 @@ module.exports = {
 
 Uses [file-loader](https://www.npmjs.com/package/) under the hood.
 
-### md( path, [href] )
+### md( path, [gfm, style, border] )
 
 <table><tr>
   <td>Type: <code>function</code></td>
-  <td>Param: <code>path</code>, <code>href</code></td>
+  <td>Param: <code>path</code>, <code>gfm</code>, <code>style</code>, <code>border</code></td>
   <td>Return: <code>rule</code></td>
   <td>Examples: <a href="examples/webpack/md.js"><code>md</code></a></td>
 </tr></table>
@@ -524,14 +524,39 @@ module.exports = {
 //=> Saved as build/docs.html
 ```
 
-**href:**
+**path:**
+
+Output path for the html file.
+
+```js
+md( "docs.html" )
+```
+
+**gfm:**
 
 Default: [sindresorhus/github-markdown-css](https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/2.10.0/github-markdown.min.css)
 
-Pass the `href` value that will be set as stylesheet source for applying the gfm styles. Could eg. be used to use a local version of the styles.
+`href` that will be set as stylesheet source for applying the gfm styles.
 
 ```js
-md( "./docs.html", "./gfm.css" )
+md( "docs.html", "gfm.css" )
+```
+
+**style:**
+
+`href` for an additional stylesheet.
+To customize the gfm styles.
+
+```js
+md( "docs.html", "gfm.css", "custom.css" )
+```
+
+**border:**
+
+Pass `true` to add a Github styled border around the `<body>`. See source module for rendered example: [jneidel/gfm-loader](https://github.com/jneidel/gfm-loader#example).
+
+```js
+md( "docs.html", "gfm.css", "custom.css", true )
 ```
 
 Uses [markdown-loader](https://www.npmjs.com/package/markdown-loader), [html-loader](https://www.npmjs.com/package/html-loader), [extract-loader](https://www.npmjs.com/package/extract-loader), [gfm-loader](https://www.npmjs.com/package/gfm-loader), [file-loader](https://www.npmjs.com/package/) under the hood.
