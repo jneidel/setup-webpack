@@ -300,13 +300,13 @@ To import [local images](#img-directory-) check out the corresponding API docs.
 
 ### Transform markdown into html
 
-Transform markdown to html, applying gfm styles.
+Transform markdown to html, applying GFM styles.
 
 View example at [`examples/webpack/md.js`](examples/webpack/md.js).
 
 ### Minify and transpile ES6 JavaScript
 
-Reduce file size minify your code and, for compatability with older browsers, polyfill and transpile ES6+ using babel.
+Reduce file size minify your code and, for compatibility with older browsers, polyfill and transpile ES6+ using babel.
 
 View working commented example at [`examples/webpack/prod.js`](examples/webpack/prod.js).
 
@@ -318,7 +318,7 @@ Any changes to the files included in the bundle will cause the project to be reb
 
 View example at [`examples/webpack/sync.js`](examples/webpack/sync.js).
 
-The script has to run webpack in watch (-w) mode in order for browser-sync to be triggerd once the project has been rebuilt.
+The script has to run webpack in watch (-w) mode in order for browser-sync to be triggered once the project has been rebuilt.
 
 ```zsh
 $ webpack -w
@@ -334,7 +334,7 @@ Running this command in your terminal will require you to install the webpack-cl
 
 ### Differentiate between development and production env
 
-Minification and transpiling will only be triggerd by enviroment variables that indicate a production evironment.
+Minification and transpiling will only be triggered by environment variables that indicate a production environment.
 
 View working example at [`examples/webpack/env.js`](examples/webpack/env.js).
 
@@ -360,7 +360,7 @@ const { babel, pug, genScss } = require( "setup-webpack" );
   <td>Type: <code>object</code></td>
   <td>Param: <code>path</code></td>
   <td>Return: <code>rule</code></td>
-  <td>Exampes: <a href="examples/webpack/prod.js"><code>prod</code></a>, <a href="examples/webpack/env.js"><code>env</code></a>, <a href="examples/webpack/complete.js"><code>complete</code></a></td>
+  <td>Examples: <a href="examples/webpack/prod.js"><code>prod</code></a>, <a href="examples/webpack/env.js"><code>env</code></a>, <a href="examples/webpack/complete.js"><code>complete</code></a></td>
 </tr></table>
 
 This loader transpiles ES6+ javascript for older browsers ([more on babel](https://babeljs.io/)) and minifies contents (shrinks down files, removing whitespace, redundant characters, [more on minify](https://babeljs.io/blog/2016/08/30/babili)).
@@ -383,7 +383,7 @@ Uses [babel-loader](https://www.npmjs.com/package/babel-loader), [babel-preset-e
   <td>Type: <code>function</code></td>
   <td>Param: <code>path</code></td>
   <td>Return: <code>entry</code></td>
-  <td>Exampes: <a href="examples/webpack/prod.js"><code>prod</code></a>, <a href="examples/webpack/complete.js"><code>complete</code></a></td>
+  <td>Examples: <a href="examples/webpack/prod.js"><code>prod</code></a>, <a href="examples/webpack/complete.js"><code>complete</code></a></td>
 </tr></table>
 
 Polyfills functions and methods not yet available in all browsers. For more information see [polyfill](https://babeljs.io/docs/usage/polyfill/).
@@ -406,7 +406,7 @@ Uses [babel-polyfill](https://www.npmjs.com/package/babel-polyfill) under the ho
   <td>Type: <br><code>function</code>, <code>generator</code></td>
   <td>Param: <br><code>path</code></td>
   <td>Return: <br><code>{ rule, plugin, minimizer, font }</code></td>
-  <td>Exampes: <br><a href="examples/webpack/scss.js"><code>scss</code></a>, <a href="examples/webpack/env.js"><code>env</code></a>, <a href="examples/webpack/complete.js"><code>complete</code></a>, <a href="examples/webpack/font.js"><code>font</code></a></td>
+  <td>Examples: <br><a href="examples/webpack/scss.js"><code>scss</code></a>, <a href="examples/webpack/env.js"><code>env</code></a>, <a href="examples/webpack/complete.js"><code>complete</code></a>, <a href="examples/webpack/font.js"><code>font</code></a></td>
 </tr></table>
 
 Transpiles scss code in the entry file into css and writes the file to the given path.
@@ -434,7 +434,7 @@ module.exports = {
 
 **font:**
 
-`genScss` also generates includes `scss.font`, which is a rule that sould be included if you're importing local font files within your sass.
+`genScss` also generates includes `scss.font`, which is a rule that should be included if you're importing local font files within your sass.
 
 ```js
 {
@@ -452,7 +452,7 @@ Uses [node-sass](https://www.npmjs.com/package/node-sass), [mini-css-extract-plu
   <td>Type: <code>function</code></td>
   <td>Param: <code>path</code></td>
   <td>Return: <code>rule</code></td>
-  <td>Exampes: <a href="examples/webpack/pug.js"><code>pug</code></a>, <a href="examples/webpack/complete.js"><code>complete</code></a></td>
+  <td>Examples: <a href="examples/webpack/pug.js"><code>pug</code></a>, <a href="examples/webpack/complete.js"><code>complete</code></a></td>
 </tr></table>
 
 Transpiles pug code in the entry file into html and writes the file to the given path.
@@ -478,7 +478,7 @@ Uses [pug-html-loader](https://www.npmjs.com/package/pug-html-loader), [html-loa
   <td>Type: <code>function</code></td>
   <td>Param: <code>directory</code></td>
   <td>Return: <code>rule</code></td>
-  <td>Exampes: <a href="examples/webpack/img.js"><code>img</code></a></td>
+  <td>Examples: <a href="examples/webpack/img.js"><code>img</code></a></td>
 </tr></table>
 
 This loader should only be used if you import local images in your pug or scss code.
@@ -506,7 +506,7 @@ Uses [file-loader](https://www.npmjs.com/package/) under the hood.
   <td>Type: <code>function</code></td>
   <td>Param: <code>path</code>, <code>href</code></td>
   <td>Return: <code>rule</code></td>
-  <td>Exampes: <a href="examples/webpack/md.js"><code>md</code></a></td>
+  <td>Examples: <a href="examples/webpack/md.js"><code>md</code></a></td>
 </tr></table>
 
 Transpile `require`d markdown files into html. GFM (github flavored markdown) styles are applied.
@@ -542,7 +542,7 @@ Uses [markdown-loader](https://www.npmjs.com/package/markdown-loader), [html-loa
   <td>Type: <code>function</code></td>
   <td>Param: <code>[proxy], [port]</code></td>
   <td>Return: <code>plugin</code></td>
-  <td>Exampes: <a href="examples/webpack/sync.js"><code>sync</code></a>, <a href="examples/webpack/env.js"><code>env</code></a>, <a href="examples/webpack/complete.js"><code>complete</code></a></td>
+  <td>Examples: <a href="examples/webpack/sync.js"><code>sync</code></a>, <a href="examples/webpack/env.js"><code>env</code></a>, <a href="examples/webpack/complete.js"><code>complete</code></a></td>
 </tr></table>
 
 Reloads brower windows connected on a given port, after webpack has rebuilt.

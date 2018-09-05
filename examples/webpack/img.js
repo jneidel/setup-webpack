@@ -1,7 +1,7 @@
 const path = require( "path" );
 const { img, pug, genScss } = require( "../.." );
 
-// Run: $ npm run font
+// Run: $ npm run img
 
 /**
  * The entrypoint file requires .pug/.scss files which import local imgs
