@@ -33,6 +33,7 @@ Includes abstractions for transforming scss and pug, transpiling and polyfilling
   * [img( directory )](#img-directory-)
   * [md( path, [gfm, style, border] )](#md-path-gfm-style-border-)
   * [browserSync( [proxy], [port] )](#browsersync-proxy-port-)
+- [Changelog](#changelog)
 - [License](#license)
 
 <!-- tocstop -->
@@ -611,6 +612,16 @@ In your npm package.json:
 This script requires the global installation of [`concurrently`](https://www.npmjs.com/package/concurrently).
 
 Uses [browser-sync](https://www.npmjs.com/package/browser-sync), [browser-sync-webpack-plugin](https://www.npmjs.com/package/browser-sync-webpack-plugin) under the hood.
+
+## Changelog
+
+**2.3.0:**
+
+- Add `md` parameters (`style`, `border`)
+
+**Previous:**
+
+For upgrading to `2.x` see [install](#install).
 
 ## License
 
