@@ -9,6 +9,7 @@ const sync = browserSync( 8000, 8080 );
 
 // browser-sync should only be used during development
 module.exports = {
+  mode  : "development",
   entry : "./examples/src/bundles/js.bundle.js",
   output: {
     path    : path.resolve( __dirname, "../build/js" ),

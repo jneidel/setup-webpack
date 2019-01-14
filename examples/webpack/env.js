@@ -1,5 +1,5 @@
 const path = require( "path" );
-const { genScss, babel, browserSync } = require( "../.." );
+const { genScss, babel, browserSync, pug } = require( "../.." );
 
 // Run: $ npm run env
 
@@ -10,6 +10,7 @@ const prod = process.env.NODE_ENV === "prod";
 const sync = browserSync( 8000, 8080 );
 
 const scss = genScss( "../css/app.css" );
+const htmlOut = "../html/env.html";
 
 module.exports = {
   mode  : prod ? "production" : "development",
@@ -20,8 +21,8 @@ module.exports = {
   },
   module: {
     rules: prod ?
-      [ babel, scss.rule ] : // Transpile js and scss if prod
-      [ scss.rule ], // Else only transpile scss
+      [ babel, scss.rule, pug( htmlOut ) ] : // Transpile js, scss, pug if prod
+      [ scss.rule, pug( htmlOut ) ], // Else only transpile scss and pug
   },
   plugins: prod ?
     [ scss.plugin ] : // Only save css if prod
