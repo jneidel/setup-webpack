@@ -50,13 +50,18 @@ exports.genScss = genScss;
 exports.genSass = genScss;
 
 // Pug
-exports.pug = path => ( {
+exports.pug = ( path, data = {} ) => ( {
   test: /\.pug$/,
   use : [
     `file-loader?name=${path}`,
     "extract-loader",
     "html-loader",
-    "pug-html-loader",
+    {
+      loader: "pug-html-loader",
+      options: {
+        data,
+      }
+    }
   ],
 } );
 
