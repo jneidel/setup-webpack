@@ -261,7 +261,7 @@ module.exports = {
     rules: [
       scss.rule, // Extract scss and turn it into css
       pug( "index.html" ) // Extract pug, turn into html and save to path
-    ] 
+    ]
   },
   plugins: [ scss.plugin ] // Save css to above specified path
   optimization: { // Production optimizations
@@ -415,7 +415,7 @@ Transpiles scss code in the entry file into css and writes the file to the given
 Function generates a webpack rule, plugin and minimizer:
 
 ```js
-const scss = genScss( "app.css" ); 
+const scss = genScss( "app.css" );
 
 module.exports = {
   output: {
@@ -447,13 +447,13 @@ module.exports = {
 
 Uses [node-sass](https://www.npmjs.com/package/node-sass), [mini-css-extract-plugin](https://www.npmjs.com/package/mini-css-extract-plugin), [sass-loader](https://www.npmjs.com/package/sass-loader), [css-loader](https://www.npmjs.com/package/), [optimize-css-assets-webpack-plugin](https://www.npmjs.com/package/), [file-loader](https://www.npmjs.com/package/file-loader) under the hood.
 
-### pug( path )
+### pug( path, [data] )
 
 <table><tr>
   <td>Type: <code>function</code></td>
-  <td>Param: <code>path</code></td>
+  <td>Param: <code>path</code>, <code>data</code></td>
   <td>Return: <code>rule</code></td>
-  <td>Examples: <a href="examples/webpack/pug.js"><code>pug</code></a>, <a href="examples/webpack/complete.js"><code>complete</code></a></td>
+  <td>Examples: <a href="examples/webpack/pug.js"><code>pug</code></a>, <a href="examples/webpack/pug-data.js"><code>pug-data</code></a>, <a href="examples/webpack/complete.js"><code>complete</code></a></td>
 </tr></table>
 
 Transpiles pug code in the entry file into html and writes the file to the given path.
@@ -464,11 +464,27 @@ module.exports = {
     path: path.resolve( __dirname, "build" ),
   },
   module: {
-    rules: [ pug( "./index.html" ) ],
+    rules: [ pug( "./index.html" ), { headline: "Headline Content" } ],
   },
 }
 
 //=> Saved as build/index.html
+```
+
+**path**
+
+Output path of the html file.
+
+```
+pug( "./index.html" )
+```
+
+**[data]**
+
+Data to be passed to pug. In pug available as javascript variables.
+
+```
+pug( "./index.html", { place: "Berlin", time: Data.now() } )
 ```
 
 Uses [pug-html-loader](https://www.npmjs.com/package/pug-html-loader), [html-loader](https://www.npmjs.com/package/html-loader), [extract-loader](https://www.npmjs.com/package/extract-loader), [file-loader](https://www.npmjs.com/package/) under the hood.
@@ -562,11 +578,11 @@ md( "docs.html", "gfm.css", "custom.css", true )
 
 Uses [markdown-loader](https://www.npmjs.com/package/markdown-loader), [html-loader](https://www.npmjs.com/package/html-loader), [extract-loader](https://www.npmjs.com/package/extract-loader), [gfm-loader](https://www.npmjs.com/package/gfm-loader), [file-loader](https://www.npmjs.com/package/) under the hood.
 
-### browserSync( [proxy], [port] )
+### browserSync( [proxy, port] )
 
 <table><tr>
   <td>Type: <code>function</code></td>
-  <td>Param: <code>[proxy], [port]</code></td>
+  <td>Param: <code>proxy</code>, <code>port</code></td>
   <td>Return: <code>plugin</code></td>
   <td>Examples: <a href="examples/webpack/sync.js"><code>sync</code></a>, <a href="examples/webpack/env.js"><code>env</code></a>, <a href="examples/webpack/complete.js"><code>complete</code></a></td>
 </tr></table>
