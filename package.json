@@ -12,6 +12,7 @@
   "scripts": {
     "scss": "webpack --config examples/webpack/scss.js",
     "pug": "webpack --config examples/webpack/pug.js",
+    "pug-data": "webpack --config examples/webpack/pug-data.js",
     "md": "webpack --config examples/webpack/md.js",
     "prod": "webpack --config examples/webpack/prod.js",
     "font": "webpack --config examples/webpack/font.js",

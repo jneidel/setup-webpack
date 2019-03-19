@@ -1,0 +1,1 @@
+require( "../pug/data.pug" );
