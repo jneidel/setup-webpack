@@ -1,6 +1,6 @@
 {
   "name": "setup-webpack",
-  "version": "2.4.0",
+  "version": "2.5.0",
   "description": "Opinionated module of webpack plugins and loaders for simple setup with explanations of common use cases",
   "repository": "jneidel/setup-webpack",
   "license": "MIT",
