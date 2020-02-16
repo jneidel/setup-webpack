@@ -211,13 +211,7 @@ module.exports = {
 
 ## Examples
 
-All examples can be found in the [`examples/webpack`](examples/webpack) folder.
-
-Clone the repo to run the examples:
-
-```
-$ git clone https://github.com/jneidel/setup-webpack.git
-```
+For a real-life example see [my personal websites config](https://github.com/jneidel/jneidel.com/blob/master/webpack.config.js).
 
 <details>
 <summary><strong>Get up to speed with webpack</strong></summary>
@@ -225,7 +219,7 @@ $ git clone https://github.com/jneidel/setup-webpack.git
 
 The default config location is in the root of the project, in a file named `webpack.config.js`.
 
-The files to transpile are `require`d or `importe`d into a single bundle file:
+The files to transpile are `require`d or `import`ed into a single bundle file:
 
 **app.bundle.js:**
 
@@ -282,6 +276,14 @@ module.exports = {
 For a more in-depth intro, check out the [webpack docs](https://webpack.js.org/guides/getting-started/).
 
 </details>
+
+All examples can be found in the [`examples/webpack`](examples/webpack) folder.
+
+Clone the repo to run the examples:
+
+```
+$ git clone https://github.com/jneidel/setup-webpack.git
+```
 
 ### Transform scss into css
 
