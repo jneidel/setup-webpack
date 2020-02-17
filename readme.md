@@ -31,7 +31,7 @@ Includes abstractions for transforming scss and pug, transpiling and polyfilling
   * [genScss( path )](#genscss-path-)
   * [pug( path )](#pug-path-)
   * [img( directory )](#img-directory-)
-  * [md( path, [gfm, style, border] )](#md-path-gfm-style-border-)
+  * [md( path, [gfm, styl, border] )](#md-path-gfm-style-border-)
   * [browserSync( [proxy], [port] )](#browsersync-proxy-port-)
 - [Changelog](#changelog)
 - [License](#license)
@@ -519,11 +519,11 @@ module.exports = {
 
 Uses [file-loader](https://www.npmjs.com/package/) under the hood.
 
-### md( path, [gfm, style, border] )
+### md( path, [gfm, style, border, js] )
 
 <table><tr>
   <td>Type: <code>function</code></td>
-  <td>Param: <code>path</code>, <code>gfm</code>, <code>style</code>, <code>border</code></td>
+  <td>Param: <code>path</code>, <code>gfm</code>, <code>style</code>, <code>border</code>, <code>js</code></td>
   <td>Return: <code>rule</code></td>
   <td>Examples: <a href="examples/webpack/md.js"><code>md</code></a></td>
 </tr></table>
@@ -576,6 +576,14 @@ Pass `true` to add a Github styled border around the `<body>`. See source module
 
 ```js
 md( "docs.html", "gfm.css", "custom.css", true )
+```
+
+**js:**
+
+`src` for an additional script file.
+
+```js
+md( "docs.html", null, "custom.css", null, "custom.js" )
 ```
 
 Uses [markdown-loader](https://www.npmjs.com/package/markdown-loader), [html-loader](https://www.npmjs.com/package/html-loader), [extract-loader](https://www.npmjs.com/package/extract-loader), [gfm-loader](https://www.npmjs.com/package/gfm-loader), [file-loader](https://www.npmjs.com/package/) under the hood.
