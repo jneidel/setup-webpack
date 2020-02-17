@@ -641,6 +641,10 @@ Uses [browser-sync](https://www.npmjs.com/package/browser-sync), [browser-sync-w
 
 ## Changelog
 
+**2.5.3:**
+
+- Add `md` parameter (`js`)
+
 **2.3.0:**
 
 - Add `md` parameters (`style`, `border`)
