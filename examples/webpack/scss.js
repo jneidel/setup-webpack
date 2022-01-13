@@ -20,6 +20,7 @@ module.exports = {
   },
   plugins     : [ scss.plugin ], // Saves css to file
   optimization: { // If mode set to 'production' use scss minimizer
+    minimize: true, // Also use it in development
     minimizer: [ scss.minimizer ],
   },
 };

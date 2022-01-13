@@ -2,9 +2,6 @@
 
 > Opinionated module of webpack loaders/plugins for simplified usage with examples for common use cases
 
-[![](https://img.shields.io/npm/dw/setup-webpack.svg?style=flat-square)](https://www.npmjs.com/package/setup-webpack)
-[![](https://img.shields.io/badge/license-MIT-green.svg?style=flat-square)](https://github.com/jneidel/setup-webpack/blob/master/licence)
-
 Reduce boilerplate when creating your webpack config and keep your package.json slim.
 
 Includes abstractions for transforming scss and pug, transpiling and polyfilling your javascript, minfication and reloading the browser on changes. All usage patterns are described with clear examples.
@@ -15,6 +12,7 @@ Includes abstractions for transforming scss and pug, transpiling and polyfilling
 <!-- toc -->
 
 - [Install](#install)
+- [Webpack version](#webpack-version)
 - [Usage](#usage)
 - [Examples](#examples)
   * [Transform scss into css](#transform-scss-into-css)
@@ -42,26 +40,11 @@ Includes abstractions for transforming scss and pug, transpiling and polyfilling
 ## Install
 
 [![](https://img.shields.io/npm/v/setup-webpack.svg?style=flat-square)](https://www.npmjs.com/package/setup-webpack)
-![](https://img.shields.io/badge/webpack-v4-blue.svg?style=flat-square)
+[![](https://img.shields.io/badge/license-MIT-green.svg?style=flat-square)](https://github.com/jneidel/setup-webpack/blob/master/licence)
 
 ```
 $ npm install setup-webpack
 ```
-
-<details>
-<summary><strong>Install version <code>v1</code></strong></summary>
-<br>
-
-[![](https://img.shields.io/badge/npm-1.2.1-blue.svg?style=flat-square)](https://www.npmjs.com/package/setup-webpack/v/1.2.1)
-![](https://img.shields.io/badge/webpack-v3-blue.svg?style=flat-square)
-
-```
-$ npm install setup-webpack@1
-```
-
-The documentation for `v1` can be found [here](https://github.com/jneidel/setup-webpack/tree/822e8d2c383121814f9c5b24634a05a41941596f).
-
-</details>
 
 <details>
 <summary><strong>Upgrade to version <code>v2</code></strong></summary>
@@ -178,6 +161,20 @@ const scss = genPug( "styles.css" );
 ```
 
 </details>
+
+<details>
+<summary><strong>Upgrade to version <code>v3</code></strong></summary>
+<br>
+
+Version `v3` upgrades webpack to `v5`, introducing no breaking changes!
+
+</details>
+
+## Webpack version
+
+This package uses: [![](https://img.shields.io/badge/webpack-v5.66.0-blue.svg?style=flat-square)](https://github.com/webpack/webpack)
+
+The latest webpack is: [![](https://img.shields.io/npm/v/webpack.svg?style=flat-square)](https://www.npmjs.com/package/webpack)
 
 ## Usage
 

@@ -1,7 +1,7 @@
 const pathModule = require( "path" );
 const browserSyncPlugin = require( "browser-sync-webpack-plugin" );
 const MiniCssExtractPlugin = require( "mini-css-extract-plugin" );
-const OptimizeCSSAssetsPlugin = require( "optimize-css-assets-webpack-plugin" );
+const CssMinimizerPlugin = require("css-minimizer-webpack-plugin");
 
 /* Rules (Loaders) */
 exports.babel = {
@@ -9,7 +9,7 @@ exports.babel = {
   use : {
     loader : "babel-loader",
     options: {
-      presets: [ "babel-preset-env", "minify" ],
+      presets: [ "babel-preset-env" ],
     },
   },
 };
@@ -35,14 +35,14 @@ const scssLoader = {
 };
 
 const genScss = path => ( {
-  minimizer: new OptimizeCSSAssetsPlugin( {} ),
+  minimizer: new CssMinimizerPlugin(),
   plugin   : new MiniCssExtractPlugin( { filename: path } ),
   rule     : scssLoader,
   font     : {
     test   : /\.(ttf|otf)$/,
     loader : "file-loader",
     options: {
-      name: `${pathModule.dirname( path )}/[name].[ext]`,
+      name: `${pathModule.dirname( path )}/[name][ext]`,
     },
   },
 } );
@@ -70,7 +70,8 @@ exports.img = path => ( {
   test   : /\.(png|jpg|jpeg|ico|svg)$/,
   loader : "file-loader",
   options: {
-    name: `${path}/[name].[ext]`,
+    name: `${path}/[name][ext]`,
+
     esModule: false,
   },
 } );
