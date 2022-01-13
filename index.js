@@ -5,11 +5,13 @@ const CssMinimizerPlugin = require("css-minimizer-webpack-plugin");
 
 /* Rules (Loaders) */
 exports.babel = {
-  test: /\.js$/,
+  test: /\.m?js$/,
+  exclude: /(node_modules)/,
   use : {
     loader : "babel-loader",
     options: {
-      presets: [ "babel-preset-env" ],
+      presets: [ "@babel/preset-env", "babel-preset-minify" ],
+      plugins: [ "@babel/plugin-transform-runtime" ],
     },
   },
 };
@@ -85,4 +87,4 @@ exports.browserSync = ( proxy = 8000, port = 8080 ) =>
   }, {} );
 
 /* Functions */
-exports.polyfill = path => [ "babel-polyfill", path ];
+exports.polyfill = path => [ "@babel/polyfill", path ];

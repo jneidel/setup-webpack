@@ -311,6 +311,10 @@ View working commented example at [`examples/webpack/prod.js`](examples/webpack/
 
 Because this process takes some time, you only want to run this in a production environment and not during development.
 
+- [What is Babel](https://babeljs.io/docs/en)
+- [Minify](https://github.com/babel/minify)
+- [Polyfill](https://babeljs.io/docs/en/babel-polyfill.html) [preset-env](https://babeljs.io/docs/en/babel-preset-env.html)
+
 ### Reload browser on file changes
 
 Any changes to the files included in the bundle will cause the project to be rebuild and the browser to reload.
