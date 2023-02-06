@@ -172,7 +172,7 @@ Version `v3` upgrades webpack to `v5`, introducing no breaking changes!
 
 ## Webpack version
 
-This package uses: [![](https://img.shields.io/badge/webpack-v5.66.0-blue.svg?style=flat-square)](https://github.com/webpack/webpack)
+This package uses: [![](https://img.shields.io/badge/webpack-v5.75.0-blue.svg?style=flat-square)](https://github.com/webpack/webpack)
 
 The latest webpack is: [![](https://img.shields.io/npm/v/webpack.svg?style=flat-square)](https://www.npmjs.com/package/webpack)
 
