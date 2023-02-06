@@ -447,7 +447,7 @@ module.exports = {
 }
 ```
 
-Uses [node-sass](https://www.npmjs.com/package/node-sass), [mini-css-extract-plugin](https://www.npmjs.com/package/mini-css-extract-plugin), [sass-loader](https://www.npmjs.com/package/sass-loader), [css-loader](https://www.npmjs.com/package/), [optimize-css-assets-webpack-plugin](https://www.npmjs.com/package/), [file-loader](https://www.npmjs.com/package/file-loader) under the hood.
+Uses [sass](https://www.npmjs.com/package/sass), [mini-css-extract-plugin](https://www.npmjs.com/package/mini-css-extract-plugin), [sass-loader](https://www.npmjs.com/package/sass-loader), [css-loader](https://www.npmjs.com/package/), [optimize-css-assets-webpack-plugin](https://www.npmjs.com/package/), [file-loader](https://www.npmjs.com/package/file-loader) under the hood.
 
 ### pug( path, [data] )
 
